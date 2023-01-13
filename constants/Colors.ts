@@ -8,6 +8,11 @@ export default {
     tint: tintColorLight,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorLight,
+    primary: "#eb7037",
+    secondary: "#18304b",
+    semiSecondary: "#04042c",
+    white: "#fff",
+    ashyGray: "#B2BEB5"
   },
   dark: {
     text: '#fff',
