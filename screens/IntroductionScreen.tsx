@@ -24,7 +24,7 @@ export default function IntroductionScreen(){
                    </View>
                 </View>
 
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.button}>
                         <Text style={styles.buttonTitle}> Continue </Text>
                 </TouchableOpacity>
 
