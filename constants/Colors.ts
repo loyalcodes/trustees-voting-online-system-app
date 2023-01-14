@@ -9,7 +9,7 @@ export default {
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorLight,
     primary: "#eb7037",
-    secondary: "#18304b",
+    secondary: "#F37021",
     semiSecondary: "#04042c",
     white: "#fff",
     ashyGray: "#B2BEB5"

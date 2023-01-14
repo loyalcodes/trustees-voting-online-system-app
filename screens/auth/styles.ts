@@ -15,7 +15,6 @@ export const styles = StyleSheet.create({
     },
     logoWrapper: {
         justifyContent: "center",
-        marginBottom: 20
     },
     loginWrapper: {
        
@@ -23,7 +22,10 @@ export const styles = StyleSheet.create({
     loginWrapperTitle: {
         fontSize: 20,
         fontWeight:"600",
-        alignSelf: "center"
+        alignSelf: "center",
+        marginBottom: 25,
+        color: Colors.light.semiSecondary,
+        marginTop: 10
     },
     textFieldWrapper: {
         borderColor: Colors.light.ashyGray,
@@ -33,33 +35,26 @@ export const styles = StyleSheet.create({
         alignSelf:"center",
         marginTop:20,
         borderRadius: 50,
-        position: "relative"
-    },
-    passwordTextFieldWrapper: {
-        borderColor: Colors.light.ashyGray,
-        borderWidth:1,
-        padding: 5,
-        width: 320,
-        alignSelf:"center",
-        marginTop:20,
-        borderRadius: 50,
-        position: "relative"
+        position: "relative",
+        flexDirection: "row",
+        justifyContent: "space-around"
     },
     loginFieldPlaceholder: {
         position: "absolute",
         backgroundColor: Colors.light.white,
-        marginLeft: 30,
+        marginLeft: 40,
         marginTop: -10,
-        width:100,
+        width:105,
 
     },
     passwordLoginFieldPlaceholder: {
         position: "absolute",
         backgroundColor: Colors.light.white,
-        marginLeft: 30,
-        marginTop: -10,
-        width:80,
-
+        marginLeft: 36,
+        marginTop: -15,
+        width:75,
+        justifyContent: "center",
+        
     },
     loginFieldPlaceholderText: {
         alignSelf: "center",
@@ -68,8 +63,9 @@ export const styles = StyleSheet.create({
     },
     inputField: {
         height: 40,
-        marginLeft: 14,
-        fontSize: 18
+        marginLeft: 8,
+        fontSize: 18,
+        width: "79%"
     },
     login: {
         backgroundColor: Colors.light.primary,
@@ -86,5 +82,18 @@ export const styles = StyleSheet.create({
        color: Colors.light.white,
        fontSize: 18,
        fontWeight: "600"
+    },
+    inputFieldIconLeft: {
+        flexDirection: "row"
+    },
+    leftIcon: {
+        alignSelf: "center",
+        marginLeft: 10
+    },
+    forgotPasswordWrapper: {
+        justifyContent: "center",
+        alignItems:"center",
+        marginTop: 10,
+        padding:10
     }
 })

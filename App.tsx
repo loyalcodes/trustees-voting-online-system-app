@@ -5,6 +5,7 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import LoginScreen from './screens/auth/LoginScreen';
+import IntroductionScreen from './screens/IntroductionScreen';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -15,7 +16,7 @@ export default function App() {
   } else {
     return (
       <SafeAreaProvider>
-        <LoginScreen/>
+        <IntroductionScreen/>
         <StatusBar />
       </SafeAreaProvider>
     );
