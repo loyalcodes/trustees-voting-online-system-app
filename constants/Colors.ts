@@ -13,7 +13,8 @@ export default {
     semiSecondary: "#04042c",
     white: "#fff",
     ashyGray: "#B2BEB5",
-    lightGray: "#E8E8E8"
+    lightGray: "#E8E8E8",
+    superLight: "##D3D3D3"
   },
   dark: {
     text: '#fff',

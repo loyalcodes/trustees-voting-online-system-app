@@ -11,10 +11,14 @@ interface eligibilityType {
     title: string,
     body: string
 }
+interface introductionType {
+    title: string,
+    body: string
+}
 
 export default function IntroductionScreen(){
 
-    const [content, setContent] = useState<String>("")
+    const [content, setContent] = useState<introductionType>()
     const [eligible, setEligible] = useState<eligibilityType>()
     const navigation = useNavigation()
    
@@ -34,7 +38,8 @@ export default function IntroductionScreen(){
                 <ScrollView>
                     <View>  
                         <View style={styles.content}>
-                            <Text style={styles.contentText}> { content } </Text>
+                            <Text style={styles.introductionTitle}> { content?.title } </Text>
+                            <Text style={styles.introductionBody}> { content?.body } </Text>
                             <View style={styles.eligibleWrapper}>
                                 <Text style={styles.eligibleTitle}> { eligible?.title } </Text>
                                 <Text style={styles.eligibleBody}> { eligible?.body } </Text>
@@ -43,7 +48,7 @@ export default function IntroductionScreen(){
                         <View style={{height:100,}}/>
                     </View>
                 </ScrollView>
-                <TouchableOpacity onPress={()=>navigation.navigate("UserScreen")} activeOpacity={0.8} style={styles.button}>
+                <TouchableOpacity onPress={()=>navigation.navigate("UserScreen")} activeOpacity= { 0.8 } style={styles.button}>
                         <Text style={styles.buttonTitle}> Continue </Text>
                 </TouchableOpacity>
 
@@ -59,17 +64,24 @@ const styles = StyleSheet.create({
     content: {
         padding: 20
     },
-    contentText: {
-        fontSize: 16
+    introductionTitle:{
+        fontWeight:'700',
+        marginBottom:8,
+    },
+    introductionBody: {
+        fontSize: 16,
+        textAlign:'justify',
     },
     eligibleWrapper:{
         marginTop: 20,
     },
     eligibleTitle:{
+        textAlign:'justify',
         fontWeight:'700',
+        marginBottom:8,
     },
     eligibleBody:{
-        
+        textAlign:'justify',
     },
     button: {
         position: "absolute",
