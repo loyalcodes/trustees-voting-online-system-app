@@ -41,7 +41,7 @@ export default function UserScreen(){
 
                     <View style={{flexDirection: "row", justifyContent:"space-around", marginTop: 20}}>
                             <View>
-                                <Text style={styles.statTitle}>0</Text>
+                                <Text style={styles.statTitle}>980</Text>
                                 <Text style={styles.text}>Candidates</Text>
                             </View>
                             <View style={{backgroundColor: Colors.light.smoke, width:0.3, height: 20, alignSelf: "center"}}/>
@@ -58,17 +58,17 @@ export default function UserScreen(){
                     <View style={{backgroundColor: Colors.light.lightGray, marginTop: 30, flex: 1}}>
 
                         <View style={{padding: 10}}>
-                            <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen" , { action: "Nominate" })} activeOpacity={0.4} style={styles.button}>
+                            <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen" , { action: "nominate" })} activeOpacity={0.4} style={styles.button}>
                                 <View style={{flexDirection: "row", alignSelf: "center"}}>
                                     <AntDesign color={Colors.light.primary} size={20} name="key"/>
                                     <Text style={{fontSize: 15, fontWeight: "600", marginLeft: 10}}>Nominate a candidate</Text>
                                 </View>
                                 <AntDesign size={18} style={{alignSelf: "center"}} name="right"/>
-                            </TouchableOpacity>
+                            </TouchableOpacity >
                             
                             <View style={{height: 10}}/>
 
-                            <TouchableOpacity activeOpacity={0.4} style={styles.button}>
+                            <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen" , { action: "vote" })} activeOpacity={0.4} style={styles.button}>
                                 <View style={{flexDirection: "row", alignSelf: "center"}}>
                                     <MaterialCommunityIcons color={Colors.light.primary} size={20} name="vote-outline"/>
                                     <Text style={{fontSize: 15, fontWeight: "600", marginLeft: 10}}>Vote a candidate</Text>

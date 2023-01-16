@@ -12,13 +12,14 @@ import Colors from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
 
 interface Props {
+    onVoteNominateHandler: any,
     item: {
         name: string,
         department: string,
         position: string
     }
 }
-export default ( {item} : Props ) =>{
+export default ( {item, onVoteNominateHandler} : Props ) =>{
 
     const navigation = useNavigation()
 
@@ -35,7 +36,7 @@ export default ( {item} : Props ) =>{
                         <Text style={[styles.detailDepartment, { color: Colors.light.primary }]}> { item.department } </Text>
                     </View>
                 </View>
-                <TouchableOpacity style={styles.button} activeOpacity={0.4}>
+                <TouchableOpacity onPress={()=>onVoteNominateHandler(item)} style={styles.button} activeOpacity={0.4}>
                     <AntDesign style={styles.buttonIcon} color={Colors.light.white} size={14} name="check"/>
                     <Text style={styles.buttonText}>Nominate</Text>
                 </TouchableOpacity>

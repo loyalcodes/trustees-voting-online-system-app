@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Image, View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList } from "react-native";
+import { Image, View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Alert } from "react-native";
 import {
     FontAwesome5,
     AntDesign,
@@ -16,6 +16,7 @@ import MainHeader from "../components/header/MainHeader";
 import { candidateList, departmentsList } from "../data";
 import ListView from "../components/candidate/ListView";
 import DepartmentItem from "../components/DepartmentItem";
+import Spinner from 'react-native-loading-spinner-overlay';
 
 interface CandidateType {
     name: string,
@@ -40,12 +41,15 @@ interface DepartmentType {
     }
 }
 
-export default function NominateScreen(){
+export default function NominateScreen( {route}: any ){
 
     const navigation = useNavigation()
 
     const [candidates, setCandidates] = useState([])
     const [departments, setDepartments] = useState([])
+    const [action, setAction] = useState("")
+    const [title, setTitle] = useState("")
+    const [shouldLoad, setShouldLoad] = useState(false)
     const [currentDepartment, setCurrentDepartment] = useState("All")
 
     const loadCandidates = () =>{        
@@ -54,6 +58,28 @@ export default function NominateScreen(){
         setCandidates(data)
         setDepartments(departments)
     }
+
+    const onVoteNominateHandler = (candidate: CandidateType) => {
+        Alert.alert(
+          action === "nominate" ? "Nomination" : "Vote",
+          `Are you sure you want to ${action} ${candidate.name}?` ,
+          [
+            { text: `Yes, I would like to ${action}`, onPress: () => {
+                setShouldLoad(true)
+                setTimeout(()=>{
+                    Alert.alert('Thank You!', 'Your cast has been recorded.')
+                    navigation.navigate("UserScreen")
+                }, 5000)
+            } },
+            {
+              text: 'No',
+              onPress: () => console.log('No Pressed'),
+              style: 'cancel',
+            },
+          ],
+          { cancelable: false }
+        );
+      };
 
     const onCategorySelected = ( { name, id, active } : DepartmentProps ) =>{
 
@@ -75,14 +101,34 @@ export default function NominateScreen(){
             setCurrentDepartment(name)
     }
 
+    const render = (action: string) =>{
+        switch(action){
+            case 'nominate':
+                setTitle("Nomination")
+                break;
+            case 'vote':
+                setTitle("Vote")
+                break;
+        }
+    }
+
     useEffect(()=>{
-            loadCandidates()
+        const { action } = route.params
+        setAction(action)
+        loadCandidates()
+        render(action)
+            
     }, [])
 
     return(
         <>
             <SafeAreaView style={styles.main}>
-                <MainHeader hasArrow title={"Nomination"}/>
+            <Spinner
+            visible={shouldLoad}
+            textContent={'Please wait...'}
+            textStyle={{color: '#FFF',marginTop:-60}}
+            />
+                <MainHeader hasArrow title={title}/>
                 <View style={styles.searchWrapper}>
                     <View style={styles.searchInnerWrapper}>
                         <AntDesign style={styles.icon} name="search1" size={20} />
@@ -99,7 +145,7 @@ export default function NominateScreen(){
                 </View>
                 <FlatList
                 data={candidates}
-                renderItem={ ({item} : CandidateListType) =><ListView item={item}/>}
+                renderItem={ ({item} : CandidateListType) =><ListView onVoteNominateHandler={onVoteNominateHandler}  item={item}/>}
                 />
 
                 <View style={{}}/>
