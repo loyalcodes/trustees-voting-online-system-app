@@ -1,32 +1,49 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity, ScrollView } from "react-native";
 import MainHeader from "../components/header/MainHeader";
 import Colors from "../constants/Colors";
 import { rawData } from "../data";
 import { useNavigation } from "@react-navigation/native";
 
+
+
+interface eligibilityType {
+    title: string,
+    body: string
+}
+
 export default function IntroductionScreen(){
 
     const [content, setContent] = useState<String>("")
+    const [eligible, setEligible] = useState<eligibilityType>()
     const navigation = useNavigation()
+   
 
     useEffect( ()=>{
         const introData = rawData.introduction
+        const eligibleData = rawData.eligibility
+        setEligible(eligibleData)
         setContent(introData)
     },[])
     
+
     return(
         <>
             <SafeAreaView style={styles.main}>
-                <View>
-                    <MainHeader hasArrow={false} title={"Introduction"}/>
-
-                   <View style={styles.content}>
-                        <Text style={styles.contentText}>{ content }</Text>
-                   </View>
-                </View>
-
-                <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen")} activeOpacity={0.8} style={styles.button}>
+                <MainHeader hasArrow={false} title={"Introduction"}/>
+                <ScrollView>
+                    <View>  
+                        <View style={styles.content}>
+                            <Text style={styles.contentText}> { content } </Text>
+                            <View style={styles.eligibleWrapper}>
+                                <Text style={styles.eligibleTitle}> { eligible?.title } </Text>
+                                <Text style={styles.eligibleBody}> { eligible?.body } </Text>
+                            </View>
+                        </View>
+                        <View style={{height:100,}}/>
+                    </View>
+                </ScrollView>
+                <TouchableOpacity onPress={()=>navigation.navigate("UserScreen")} activeOpacity={0.8} style={styles.button}>
                         <Text style={styles.buttonTitle}> Continue </Text>
                 </TouchableOpacity>
 
@@ -44,6 +61,15 @@ const styles = StyleSheet.create({
     },
     contentText: {
         fontSize: 16
+    },
+    eligibleWrapper:{
+        marginTop: 20,
+    },
+    eligibleTitle:{
+        fontWeight:'700',
+    },
+    eligibleBody:{
+        
     },
     button: {
         position: "absolute",
