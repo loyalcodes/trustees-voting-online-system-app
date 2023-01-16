@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
        
     },
     loginWrapperTitle: {
-        fontSize: 20,
+        fontSize: 22,
         fontWeight:"600",
         alignSelf: "center",
         marginBottom: 25,

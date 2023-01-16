@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import MainHeader from "../components/header/MainHeader";
-import Colors from "../constants/Colors";
-import { rawData } from "../data";
-import { useNavigation } from "@react-navigation/native";
+import MainHeader from "../../components/header/MainHeader";
+import Colors from "../../constants/Colors";
+import { rawData } from "../../data";
 
-export default function IntroductionScreen(){
+export default function ForgotPasswordScreen () {
 
     const [content, setContent] = useState<String>("")
-    const navigation = useNavigation()
 
     useEffect( ()=>{
-        const introData = rawData.introduction
+        const introData = rawData.forgotPassword
         setContent(introData)
     },[])
     
@@ -19,16 +17,12 @@ export default function IntroductionScreen(){
         <>
             <SafeAreaView style={styles.main}>
                 <View>
-                    <MainHeader hasArrow={false} title={"Introduction"}/>
+                    <MainHeader hasArrow title={"Forgot Password"}/>
 
                    <View style={styles.content}>
                         <Text style={styles.contentText}>{ content }</Text>
                    </View>
                 </View>
-
-                <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen")} activeOpacity={0.8} style={styles.button}>
-                        <Text style={styles.buttonTitle}> Continue </Text>
-                </TouchableOpacity>
 
             </SafeAreaView>
         </>

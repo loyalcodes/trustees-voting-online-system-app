@@ -12,17 +12,29 @@ import {
   } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { showAlertPopup } from "../../helper/Alerts";
+import { useNavigation } from "@react-navigation/native";
 
 export default function LoginScreen(){
 
     const [email, setEmail] = useState<String>("")
     const [password, setPassword] = useState<String>("")
+    const navigation = useNavigation()
+
+    const validateEmail = (email: String) => {
+        return String(email)
+          .toLowerCase()
+          .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          );
+      };
 
     const onLogin = () =>{
-        if(email === "" || password === ""){
-            showAlertPopup("Authentication", "All fields are required")
+        if(email.trim() === "" || password === ""){
+            showAlertPopup("Required", "All fields are required")
+        }else if(!validateEmail(email)){
+            showAlertPopup("Invalid", "Please enter a valid email address")
         }else{
-
+            navigation.navigate("IntroductionScreen")
         }
     }
 
@@ -37,6 +49,10 @@ export default function LoginScreen(){
                 <View style={styles.loginWrapper}>
 
                     <Text style={styles.loginWrapperTitle}>Sign In</Text>
+
+                    <View style={{marginBottom: 20}}>
+                        <Text style={{textAlign: "center"}}> Use your NamRA email address and password to successfully log into the app </Text>
+                    </View>
 
                     <View style={styles.textFieldWrapper}>
                         <View style={styles.loginFieldPlaceholder}>
@@ -67,7 +83,7 @@ export default function LoginScreen(){
                     </View>
 
                    <View style={styles.forgotPasswordWrapper}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={()=>navigation.navigate("ForgotPasswordScreen")}>
                             <Text>Forgot Password</Text>
                         </TouchableOpacity>
                    </View>

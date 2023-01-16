@@ -12,7 +12,8 @@ export default {
     secondary: "#F37021",
     semiSecondary: "#04042c",
     white: "#fff",
-    ashyGray: "#B2BEB5"
+    ashyGray: "#B2BEB5",
+    lightGray: "#E8E8E8"
   },
   dark: {
     text: '#fff',
