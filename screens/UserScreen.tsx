@@ -20,7 +20,7 @@ export default function UserScreen(){
         <>
             <SafeAreaView style={styles.main}>
                 <View>
-                <Image style={{width: 80,height: 80, borderRadius: 50, alignSelf:"center", marginTop: 20}} resizeMode="contain" source={require('../assets/images/logo_white.png')}/>
+                    <Image style={{width: 80,height: 80, borderRadius: 50, alignSelf:"center", marginTop: 20}} resizeMode="contain" source={require('../assets/images/logo_white.png')}/>
                 </View>
                 <View style={styles.bottomContainer}>
                     <View style={styles.imageWrapper}>

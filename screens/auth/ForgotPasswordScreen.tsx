@@ -1,3 +1,4 @@
+import { textAlign } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import MainHeader from "../../components/header/MainHeader";
@@ -37,7 +38,9 @@ const styles = StyleSheet.create({
         padding: 20
     },
     contentText: {
-        fontSize: 16
+        fontSize: 16,
+        textAlign:'justify',
+        paddingTop:20,
     },
     button: {
         position: "absolute",

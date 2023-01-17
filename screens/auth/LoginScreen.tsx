@@ -19,6 +19,7 @@ export default function LoginScreen(){
     const [email, setEmail] = useState<String>("")
     const [password, setPassword] = useState<String>("")
     const navigation = useNavigation()
+    const [showHide, setShowHide] = useState(false)
 
     const validateEmail = (email: String) => {
         return String(email)
@@ -73,22 +74,25 @@ export default function LoginScreen(){
                             </View>
                             <View style={styles.inputFieldIconLeft}>
                                 <AntDesign style={styles.leftIcon} size={25} color={Colors.light.semiSecondary} name="lock"/>
-                                <TextInput onChangeText={ (text)=>setPassword(text) } secureTextEntry style={styles.inputField} placeholder="Enter password"/>
+                                <TextInput onChangeText={ (text)=>setPassword(text) } secureTextEntry= {!showHide } style={styles.inputField} placeholder="Enter password"/>
                             </View>
                         </View>
-                        <TouchableOpacity style={ {alignSelf:"center", marginRight:10} }>
-                            <Feather size={20} name="eye"/>
-                        </TouchableOpacity>
-                        
+                        {
+                            !showHide ?
+                            <TouchableOpacity onPress={()=>setShowHide( !showHide ) }  style={ {alignSelf:"center", marginRight:10} }>
+                                <Feather size={20} name="eye"/>
+                            </TouchableOpacity> 
+                            :
+                            <TouchableOpacity onPress={()=>setShowHide( !showHide ) }  style={ {alignSelf:"center", marginRight:10} }>
+                                <Feather size={20} name="eye-off"/>
+                            </TouchableOpacity> 
+                        }
                     </View>
-
                    <View style={styles.forgotPasswordWrapper}>
                         <TouchableOpacity onPress={()=>navigation.navigate("ForgotPasswordScreen")}>
                             <Text>Forgot Password</Text>
                         </TouchableOpacity>
                    </View>
-
-
                     <TouchableOpacity onPress={onLogin} activeOpacity={0.6} style={styles.login}>
                         <Text style={styles.loginText}>Login</Text>
                     </TouchableOpacity>

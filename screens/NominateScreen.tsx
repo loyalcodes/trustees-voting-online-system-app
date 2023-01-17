@@ -64,18 +64,18 @@ export default function NominateScreen( {route}: any ){
           action === "nominate" ? "Nomination" : "Vote",
           `Are you sure you want to ${action} ${candidate.name}?` ,
           [
-            { text: `Yes, I would like to ${action}`, onPress: () => {
-                setShouldLoad(true)
-                setTimeout(()=>{
-                    Alert.alert('Thank You!', 'Your cast has been recorded.')
-                    navigation.navigate("UserScreen")
-                }, 5000)
-            } },
             {
               text: 'No',
               onPress: () => console.log('No Pressed'),
               style: 'cancel',
             },
+            { text: 'Yes', onPress: () => {
+                    setShouldLoad(true)
+                    setTimeout(()=>{
+                        Alert.alert('Thank You!', 'Your cast has been recorded.')
+                        navigation.navigate("UserScreen")
+                    }, 5000)
+            }   },
           ],
           { cancelable: false }
         );
@@ -124,11 +124,11 @@ export default function NominateScreen( {route}: any ){
         <>
             <SafeAreaView style={styles.main}>
             <Spinner
-            visible={shouldLoad}
-            textContent={'Please wait...'}
-            textStyle={{color: '#FFF',marginTop:-60}}
+                visible={shouldLoad}
+                textContent={'Please wait...'}
+                textStyle={{color: '#FFF',marginTop:-60}}
             />
-                <MainHeader hasArrow title={title}/>
+                <MainHeader hasArrow title={title} />
                 <View style={styles.searchWrapper}>
                     <View style={styles.searchInnerWrapper}>
                         <AntDesign style={styles.icon} name="search1" size={20} />
