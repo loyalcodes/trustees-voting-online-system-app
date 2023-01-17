@@ -72,18 +72,10 @@ export default function IntroductionScreen(){
                             </TouchableOpacity>
                         </View>
                         <View style={styles.contineButtonWrapper}>
-                            {
-                                selected ? 
-                                <TouchableOpacity onPress={()=>navigation.navigate("UserScreen")} activeOpacity= { 0.8 } style={styles.button} disabled= { !selected } >
-                                    <Text style={styles.buttonTitle}> Continue </Text>
-                                </TouchableOpacity>
-                                :
-                                <TouchableOpacity style={styles.disabledButton} disabled= { !selected } >
-                                    <Text style={styles.disabledbuttonTitle}> Continue </Text>
-                                </TouchableOpacity>
-                            }
-                        </View>
-                        
+                            <TouchableOpacity onPress={()=> selected ? navigation.navigate("UserScreen") : {}} activeOpacity= { 0.8 } style={selected ? styles.button : styles.disabledButton} >
+                                <Text style={[styles.buttonTitle, { color: selected ? Colors.light.white : Colors.light.black }]}> Continue </Text>
+                            </TouchableOpacity>
+                    </View>
                     </View>
                 </View>
             </SafeAreaView>
