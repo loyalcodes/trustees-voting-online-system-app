@@ -6,7 +6,9 @@ import { IntroductionScreen,
          NominateScreen, 
          UserScreen, 
          UserNomineesScreen,
-         NotificationScreen
+         NotificationScreen,
+         NotificationContentScreen,
+         DocumentUploadScreen
          } from '../screens'
 
 const RootStack = createStackNavigator()
@@ -22,6 +24,9 @@ export default () => (
         <RootStack.Screen name='UserScreen' component={UserScreen} />
         <RootStack.Screen name='UserNomineesScreen' component={UserNomineesScreen} />
         <RootStack.Screen name='NotificationScreen' component={NotificationScreen} />
+        <RootStack.Screen name='NotificationContentScreen' component={NotificationContentScreen} />
+        <RootStack.Screen name='DocumentUploadScreen' component={DocumentUploadScreen} />
+        
     </RootStack.Navigator>
 )
 

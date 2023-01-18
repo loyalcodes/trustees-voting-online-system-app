@@ -93,7 +93,7 @@ export default function UserScreen(){
                             
                             <View style={{height: 10}}/>
 
-                            <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen" , { action: "nominate" })} activeOpacity={0.4} style={styles.button}>
+                            <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen" , { action: "endorse" })} activeOpacity={0.4} style={styles.button}>
                                 <View style={{flexDirection: "row", alignSelf: "center"}}>
                                     <Feather color={Colors.light.primary} size={20} name="thumbs-up"/>
                                     <Text style={{fontSize: 15, fontWeight: "600", marginLeft: 10}}>Endorse candidate</Text>
@@ -114,12 +114,11 @@ export default function UserScreen(){
                         </View>
 
 
-
                         <View style={{alignSelf:"center", marginTop: 20, position: "absolute", bottom: 20}}>
-                        <TouchableOpacity onPress={()=>onSignOutHandler()} style={{backgroundColor: Colors.light.red, padding: 10, width: 150, borderRadius: 50, height: 45, alignItems: "center", justifyContent: "center"}}>
-                            <Text style={{alignSelf: "center", color: Colors.light.white, fontWeight:"700", fontSize: 15}}>Sign Out</Text>
-                        </TouchableOpacity>
-                        <Text style={{fontSize:8, alignSelf:"center", marginTop: 10}}>&copy;Copyright 2023. NamRA</Text>
+                            <TouchableOpacity onPress={()=>onSignOutHandler()} style={{backgroundColor: Colors.light.red, padding: 10, width: 150, borderRadius: 50, height: 45, alignItems: "center", justifyContent: "center"}}>
+                                <Text style={{alignSelf: "center", color: Colors.light.white, fontWeight:"700", fontSize: 15}}>Sign Out</Text>
+                            </TouchableOpacity>
+                        <Text style={{fontSize:8, alignSelf:"center", marginTop: 10}}>Copyright &copy;2023. NamRA</Text>
                     </View>
 
                     </View>

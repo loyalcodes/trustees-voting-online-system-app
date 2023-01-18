@@ -9,6 +9,7 @@ import {
     Ionicons,
   } from "@expo/vector-icons"
 import Colors from "../constants/Colors"
+import { useNavigation } from "@react-navigation/native"
 
 interface dataType {
     item: {
@@ -21,9 +22,11 @@ interface dataType {
 
 export default ( { item } :dataType ) =>{
 
+    const navigation = useNavigation()
+
     return (
         <>
-           <TouchableOpacity activeOpacity={0.4} style={styles.main}>
+           <TouchableOpacity onPress={()=>navigation.navigate("NotificationContentScreen", { content: item })} activeOpacity={0.4} style={styles.main}>
                 <AntDesign style={{top: 4}} name="bells" size={20}/>
                 <View style={styles.innerWrapper}>
                     <Text style={styles.title}> { item.title } </Text>

@@ -16,7 +16,8 @@ export default {
     lightGray: "#E8E8E8",
     superLight: "#D3D3D3",
     smoke: "#848884",
-    red: "#FF0000"
+    red: "#FF0000",
+    green:"#4CBB17"
   },
   dark: {
     text: '#fff',

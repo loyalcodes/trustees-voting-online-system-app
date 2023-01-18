@@ -110,6 +110,9 @@ export default function NominateScreen( {route}: any ){
             case 'vote':
                 setTitle("Vote")
                 break;
+            case 'endorse':
+                setTitle("Endorsement")
+                break;
         }
     }
 
@@ -134,7 +137,7 @@ export default function NominateScreen( {route}: any ){
                 <View style={styles.searchWrapper}>
                     <View style={styles.searchInnerWrapper}>
                         <AntDesign style={styles.icon} name="search1" size={20} />
-                        <TextInput placeholderTextColor='#000' style={styles.input} placeholder="Search candidate to nominate" />
+                        <TextInput placeholderTextColor='#000' style={styles.input} placeholder={`Search candidate to ${action}`} />
                     </View>
                 </View>
 
@@ -153,7 +156,7 @@ export default function NominateScreen( {route}: any ){
                 <View style={{}}/>
 
             
-            <View style={styles.departmentListWrapper}>
+            <View style={[styles.departmentListWrapper, { display: action === 'nominate' ? 'flex' : 'none' }]}>
                 <View style={{marginBottom:10}}>
                 <Text style={styles.departmentListWrapperText}>View by department</Text>
                 <FlatList

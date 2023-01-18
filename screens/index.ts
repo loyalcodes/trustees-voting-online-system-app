@@ -5,6 +5,9 @@ import NominateScreen from "./NominateScreen"
 import UserScreen from "./UserScreen"
 import UserNomineesScreen from "./UserNomineesScreen"
 import NotificationScreen from "./NotificationScreen"
+import NotificationContentScreen from "./NotificationContentScreen"
+import DocumentUploadScreen from "./DocumentUploadScreen"
+
 export {
     IntroductionScreen,
     LoginScreen,
@@ -12,5 +15,7 @@ export {
     NominateScreen,
     UserScreen,
     UserNomineesScreen,
-    NotificationScreen
+    NotificationScreen,
+    NotificationContentScreen,
+    DocumentUploadScreen
 }
