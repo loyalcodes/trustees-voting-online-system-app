@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
         flex: 1,
         backgroundColor:Colors.light.white,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
     },
     logo: {
         width: 200,
@@ -37,12 +37,14 @@ export const styles = StyleSheet.create({
         borderRadius: 50,
         position: "relative",
         flexDirection: "row",
-        justifyContent: "space-around"
+        justifyContent: "space-around",
+    
+    
     },
     loginFieldPlaceholder: {
         position: "absolute",
         backgroundColor: Colors.light.white,
-        marginLeft: 40,
+        marginLeft: 18,
         marginTop: -10,
         width:105,
 
@@ -65,7 +67,13 @@ export const styles = StyleSheet.create({
         height: 40,
         marginLeft: 8,
         fontSize: 18,
-        width: "79%"
+        width: "79%",
+    },
+    emailInputField: {
+        height: 40,
+        marginLeft: 8,
+        fontSize: 18,
+        width: "80%",
     },
     login: {
         backgroundColor: Colors.light.primary,
@@ -84,7 +92,8 @@ export const styles = StyleSheet.create({
        fontWeight: "600"
     },
     inputFieldIconLeft: {
-        flexDirection: "row"
+        flexDirection: "row",
+        
     },
     leftIcon: {
         alignSelf: "center",

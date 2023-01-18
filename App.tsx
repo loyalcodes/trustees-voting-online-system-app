@@ -1,8 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
-import { ActivityIndicator, View } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ActivityIndicator, View , StatusBar} from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from "./components/Context";
 import { readLocalStorageObject } from './helper/LocalStorage';
 import RootStackScreens from './stacks/RootStackScreens';
@@ -87,8 +86,8 @@ const checkLogHistory = async () => {
   } else {
 
     return (
-      <SafeAreaProvider>
         <AuthContext.Provider value={ authContext }>
+          <StatusBar barStyle="dark-content"/>
         {
           loginState.state ? (
             <NavigationContainer>
@@ -100,9 +99,8 @@ const checkLogHistory = async () => {
             </NavigationContainer>
           )
         }
-        <StatusBar />
+        
         </AuthContext.Provider>
-      </SafeAreaProvider>
     );
   }
 }

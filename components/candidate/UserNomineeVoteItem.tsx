@@ -54,8 +54,8 @@ export default ( {item, onVoteNominateHandler, action} : Props ) =>{
                     </View>
                 </View>
                 <TouchableOpacity onPress={()=>onVoteNominateHandler(item)} style={styles.button} activeOpacity={0.4}>
-                    <AntDesign style={styles.buttonIcon} color={Colors.light.white} size={14} name="check"/>
-                    <Text style={styles.buttonText}> { action } </Text>
+                    <AntDesign style={styles.buttonIcon} color={Colors.light.white} size={14} name="close"/>
+                    <Text style={styles.buttonText}> Remove </Text>
                 </TouchableOpacity>
            </View>
         </>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         height: 70
     },
     button: {
-        backgroundColor: Colors.light.semiSecondary,
+        backgroundColor: Colors.light.red,
         justifyContent: "space-around",
         flexDirection: "row",
         height:30,

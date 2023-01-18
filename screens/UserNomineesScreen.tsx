@@ -16,6 +16,7 @@ import { candidateList, departmentsList } from "../data";
 import ListView from "../components/candidate/ListView";
 import DepartmentItem from "../components/DepartmentItem";
 import Spinner from 'react-native-loading-spinner-overlay';
+import UserNomineeVoteItem from "../components/candidate/UserNomineeVoteItem";
 
 interface CandidateType {
     name: string,
@@ -40,7 +41,7 @@ interface DepartmentType {
     }
 }
 
-export default function NominateScreen( {route}: any ){
+export default function UserNomineesScreen( {route}: any ){
 
     const navigation = useNavigation()
 
@@ -58,12 +59,10 @@ export default function NominateScreen( {route}: any ){
         setDepartments(departments)
     }
 
-    
-
     const onVoteNominateHandler = (candidate: CandidateType) => {
         Alert.alert(
           action === "nominate" ? "Nomination" : "Vote",
-          `Are you sure you want to ${action} ${candidate.name}?` ,
+          `Are you sure you want to remove ${candidate.name} from your list?` ,
           [
             { text: `Yes`, onPress: () => {
                 setShouldLoad(true)
@@ -105,10 +104,10 @@ export default function NominateScreen( {route}: any ){
     const render = (action: string) =>{
         switch(action){
             case 'nominate':
-                setTitle("Nomination")
+                setTitle("My Nominees")
                 break;
             case 'vote':
-                setTitle("Vote")
+                setTitle("My Votes")
                 break;
         }
     }
@@ -131,38 +130,17 @@ export default function NominateScreen( {route}: any ){
             textStyle={{color: '#FFF',marginTop:-60}}
             />
                 <MainHeader hasArrow title={title}/>
-                <View style={styles.searchWrapper}>
-                    <View style={styles.searchInnerWrapper}>
-                        <AntDesign style={styles.icon} name="search1" size={20} />
-                        <TextInput placeholderTextColor='#000' style={styles.input} placeholder="Search candidate to nominate" />
-                    </View>
-                </View>
+              
 
-                <View style={styles.nominees}>
-                    <View style={{flexDirection: "row"}}>
-                        <Text style={{fontSize:16, fontWeight:"700", alignSelf:"center"}}>Candidates</Text>
-                        <AntDesign size={12} style={{marginLeft: 5, alignSelf: "center", top: 2.5}} name="right"/>
-                    </View>
-                    <Text style={{fontSize:10, fontWeight:"600", marginLeft: 5, alignSelf: "center", top: 2}}> { currentDepartment } </Text>
-                </View>
                 <FlatList
                 data={candidates}
-                renderItem={ ({item} : CandidateListType) =><ListView action={action} onVoteNominateHandler={onVoteNominateHandler}  item={item}/>}
+                renderItem={ ({item} : CandidateListType) =><UserNomineeVoteItem action={action} onVoteNominateHandler={onVoteNominateHandler}  item={item}/>}
                 />
 
                 <View style={{}}/>
 
             
-            <View style={styles.departmentListWrapper}>
-                <View style={{marginBottom:10}}>
-                <Text style={styles.departmentListWrapperText}>View by department</Text>
-                <FlatList
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                data={departments}
-                renderItem={ ({item}: DepartmentType) => <DepartmentItem onCategorySelected={onCategorySelected} item={item}/>}/>
-                </View>
-            </View>
+         
 
             </SafeAreaView>
         </>

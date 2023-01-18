@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Image, Text, TouchableOpacity, StatusBar, Platform, Alert } from "react-native";
 import Colors from "../constants/Colors";
 import {
     FontAwesome5,
@@ -11,16 +11,37 @@ import {
   } from "@expo/vector-icons";
 
   import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function UserScreen(){
 
     const navigation = useNavigation()
 
+    const onSignOutHandler = () => {
+        Alert.alert(
+          'Sign out',
+          `Are you sure you want to signout?` ,
+          [
+            { text: `Yes`, onPress: () => {
+                navigation.navigate("LoginScreen")
+            } },
+            {
+              text: 'No',
+              onPress: () => {},
+              style: 'cancel',
+            },
+          ],
+          { cancelable: false }
+        );
+      };
+
     return(
         <>
             <SafeAreaView style={styles.main}>
+            <StatusBar barStyle={ Platform.OS === 'ios'  ? 'dark-content' : 'light-content'}/>
+            <View style={{backgroundColor: Colors.light.semiSecondary, flex: 1}}>
                 <View>
-                <Image style={{width: 80,height: 80, borderRadius: 50, alignSelf:"center", marginTop: 20}} resizeMode="contain" source={require('../assets/images/logo_white.png')}/>
+                <Image style={{width: 150,height: 80, borderRadius: 50, alignSelf:"center", marginTop: 20}} resizeMode="contain" source={require('../assets/images/logo_white.png')}/>
                 </View>
                 <View style={styles.bottomContainer}>
                     <View style={styles.imageWrapper}>
@@ -33,34 +54,30 @@ export default function UserScreen(){
                         <Text style={styles.infoDepartment}>ICT</Text>
                     </View>
 
-                    <View style={{alignSelf:"center", marginTop: 20}}>
-                        <TouchableOpacity style={{backgroundColor: Colors.light.red, padding: 10, width: 100, borderRadius: 50}}>
-                            <Text style={{alignSelf: "center", color: Colors.light.white, fontWeight:"700"}}>Sign Out</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <View style={{height:0.2, backgroundColor: Colors.light.smoke, marginTop: 20, marginLeft: 16, marginRight: 16}}/>
 
                     <View style={{flexDirection: "row", justifyContent:"space-around", marginTop: 20}}>
                             <View>
                                 <Text style={styles.statTitle}>980</Text>
-                                <Text style={styles.text}>Candidates</Text>
+                                <Text style={styles.text}>Notifications</Text>
                             </View>
                             <View style={{backgroundColor: Colors.light.smoke, width:0.3, height: 20, alignSelf: "center"}}/>
-                            <View>
-                                <Text style={styles.statTitle}>0</Text>
+                            <TouchableOpacity onPress={()=>navigation.navigate("UserNomineesScreen", { action : 'nominate' })}>
+                                <Text style={styles.statTitle}>70</Text>
                                 <Text style={styles.text}>My Nominees</Text>
-                            </View>
+                            </TouchableOpacity>
                             <View style={{backgroundColor: Colors.light.smoke, width:0.3, height: 20, alignSelf: "center"}}/>
-                            <View>
-                                <Text style={styles.statTitle}>0</Text>
-                                <Text style={styles.text}>Votes</Text>
-                            </View>
+                            <TouchableOpacity onPress={()=>navigation.navigate("UserNomineesScreen", { action : 'vote' })}>
+                                <Text style={styles.statTitle}>16</Text>
+                                <Text style={styles.text}>My Votes</Text>
+                            </TouchableOpacity>
                     </View>
                     <View style={{backgroundColor: Colors.light.lightGray, marginTop: 30, flex: 1}}>
 
                         <View style={{padding: 10}}>
                             <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen" , { action: "nominate" })} activeOpacity={0.4} style={styles.button}>
                                 <View style={{flexDirection: "row", alignSelf: "center"}}>
-                                    <AntDesign color={Colors.light.primary} size={20} name="key"/>
+                                    <Feather color={Colors.light.primary} size={23} name="key"/>
                                     <Text style={{fontSize: 15, fontWeight: "600", marginLeft: 10}}>Nominate a candidate</Text>
                                 </View>
                                 <AntDesign size={18} style={{alignSelf: "center"}} name="right"/>
@@ -68,16 +85,37 @@ export default function UserScreen(){
                             
                             <View style={{height: 10}}/>
 
+                            <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen" , { action: "nominate" })} activeOpacity={0.4} style={styles.button}>
+                                <View style={{flexDirection: "row", alignSelf: "center"}}>
+                                    <Feather color={Colors.light.primary} size={20} name="thumbs-up"/>
+                                    <Text style={{fontSize: 15, fontWeight: "600", marginLeft: 10}}>Endorse candidate</Text>
+                                </View>
+                                <AntDesign size={18} style={{alignSelf: "center"}} name="right"/>
+                            </TouchableOpacity >
+                            
+
+                            <View style={{height: 10}}/>
+
                             <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen" , { action: "vote" })} activeOpacity={0.4} style={styles.button}>
                                 <View style={{flexDirection: "row", alignSelf: "center"}}>
-                                    <MaterialCommunityIcons color={Colors.light.primary} size={20} name="vote-outline"/>
+                                    <MaterialCommunityIcons color={Colors.light.primary} size={23} name="vote-outline"/>
                                     <Text style={{fontSize: 15, fontWeight: "600", marginLeft: 10}}>Vote a candidate</Text>
                                 </View>
                                 <AntDesign size={18} style={{alignSelf: "center"}} name="right"/>
                             </TouchableOpacity>
                         </View>
 
+
+
+                        <View style={{alignSelf:"center", marginTop: 20, position: "absolute", bottom: 20}}>
+                        <TouchableOpacity onPress={()=>onSignOutHandler()} style={{backgroundColor: Colors.light.red, padding: 10, width: 150, borderRadius: 50, height: 45, alignItems: "center", justifyContent: "center"}}>
+                            <Text style={{alignSelf: "center", color: Colors.light.white, fontWeight:"700", fontSize: 15}}>Sign Out</Text>
+                        </TouchableOpacity>
+                        <Text style={{fontSize:8, alignSelf:"center", marginTop: 10}}>&copy;Copyright 2023. NamRA</Text>
                     </View>
+
+                    </View>
+                </View>
                 </View>
             </SafeAreaView>
         </>
@@ -87,7 +125,6 @@ export default function UserScreen(){
 const styles = StyleSheet.create({
     main: {
         flex: 1,
-        backgroundColor: Colors.light.semiSecondary
     },
     bottomContainer: {
         backgroundColor: Colors.light.white,
@@ -139,7 +176,8 @@ const styles = StyleSheet.create({
         alignSelf:"center"
     },
     text: {
-        color: Colors.light.smoke
+        color: Colors.light.smoke,
+        fontSize: 12
     },
     button:{
         backgroundColor: Colors.light.white,

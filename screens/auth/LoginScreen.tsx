@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Image, View, Text, TextInput, TouchableOpacity } from "react-native";
+import { Image, View, Text, TextInput, TouchableOpacity, StatusBar, SafeAreaView, Platform, KeyboardAvoidingView } from "react-native";
 import { styles } from "./styles";
 import {
     FontAwesome5,
@@ -19,6 +18,8 @@ export default function LoginScreen(){
     const [email, setEmail] = useState<String>("")
     const [password, setPassword] = useState<String>("")
     const navigation = useNavigation()
+
+    const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
 
     const validateEmail = (email: String) => {
         return String(email)
@@ -41,7 +42,8 @@ export default function LoginScreen(){
     return(
         <>
             <SafeAreaView style={styles.main}>
-
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : 'height'} keyboardVerticalOffset={keyboardVerticalOffset}>
+            <StatusBar barStyle={ Platform.OS === 'ios'  ? 'dark-content' : 'light-content'}/>
                 <View style={styles.logoWrapper}>
                     <Image resizeMode="contain" style={styles.logo} source={require("../../assets/images/logo.png")}/>
                 </View>
@@ -50,8 +52,8 @@ export default function LoginScreen(){
 
                     <Text style={styles.loginWrapperTitle}>Sign In</Text>
 
-                    <View style={{marginBottom: 20}}>
-                        <Text style={{textAlign: "center"}}> Use your NamRA email address and password to successfully log into the app </Text>
+                    <View style={{marginBottom: 20, marginLeft: 20, marginRight: 20}}>
+                        <Text style={{textAlign: "center", fontSize: 16}}> Use your NamRA email address and password to successfully log into the app </Text>
                     </View>
 
                     <View style={styles.textFieldWrapper}>
@@ -59,8 +61,8 @@ export default function LoginScreen(){
                             <Text style={styles.loginFieldPlaceholderText}>Email Address</Text>
                         </View>
                         <View style={styles.inputFieldIconLeft}>
-                            <AntDesign style={styles.leftIcon} size={20} color={Colors.light.semiSecondary} name="mail"/>
-                            <TextInput onChangeText={ (text)=>setEmail(text) } style={styles.inputField} placeholder="Enter email address"/>
+                            <AntDesign style={[styles.leftIcon, { marginLeft: -10 }]} size={20} color={Colors.light.semiSecondary} name="mail"/>
+                            <TextInput placeholderTextColor="#000"  onChangeText={ (text)=>setEmail(text) } style={styles.emailInputField} placeholder="Enter email address"/>
                         </View>
                     </View>
 
@@ -73,7 +75,7 @@ export default function LoginScreen(){
                             </View>
                             <View style={styles.inputFieldIconLeft}>
                                 <AntDesign style={styles.leftIcon} size={25} color={Colors.light.semiSecondary} name="lock"/>
-                                <TextInput onChangeText={ (text)=>setPassword(text) } secureTextEntry style={styles.inputField} placeholder="Enter password"/>
+                                <TextInput placeholderTextColor="#000" onChangeText={ (text)=>setPassword(text) } secureTextEntry style={styles.inputField} placeholder="Enter password"/>
                             </View>
                         </View>
                         <TouchableOpacity style={ {alignSelf:"center", marginRight:10} }>
@@ -94,7 +96,7 @@ export default function LoginScreen(){
                     </TouchableOpacity>
 
                 </View>
-
+</KeyboardAvoidingView>
             </SafeAreaView>
         </>
     )

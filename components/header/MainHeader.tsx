@@ -41,18 +41,20 @@ const styles = StyleSheet.create({
     text: {
         color: Colors.light.white,
         fontSize: 18,
-        marginLeft:10,
+        marginLeft:0,
         alignSelf:"center",
         fontWeight: "700"
     },
     arrow: {
         color: Colors.light.white,
         alignSelf: "center",
-        marginLeft: 10
+        marginLeft: 0
     },
     arrowSection: {
         alignSelf: "center",
-        marginLeft: 10
+        height: 50,
+        width: 60,
+        justifyContent: "center",
     }
 })
 
