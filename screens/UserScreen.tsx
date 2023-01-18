@@ -57,7 +57,7 @@ export default function UserScreen(){
                     <View style={{height:0.2, backgroundColor: Colors.light.smoke, marginTop: 20, marginLeft: 16, marginRight: 16}}/>
 
                     <View style={{flexDirection: "row", justifyContent:"space-around", marginTop: 20}}>
-                            <View>
+                            <TouchableOpacity onPress={()=>navigation.navigate("NotificationScreen")}>
                                 <View style={{alignSelf: "center"}}>
                                     <View style={{position: "relative"}}>
                                         <View style={{backgroundColor: Colors.light.red, height: 17, width: 17, borderRadius: 50, padding:1, justifyContent:"center", alignItems:"center", position: "absolute", zIndex: 1, marginRight: -10, marginTop: -5, marginLeft: 14}}>
@@ -68,7 +68,7 @@ export default function UserScreen(){
                                 </View>
                                 
                                 <Text style={styles.text}>Notifications</Text>
-                            </View>
+                            </TouchableOpacity>
                             <View style={{backgroundColor: Colors.light.smoke, width:0.3, height: 20, alignSelf: "center"}}/>
                             <TouchableOpacity onPress={()=>navigation.navigate("UserNomineesScreen", { action : 'nominate' })}>
                                 <Text style={styles.statTitle}>70</Text>

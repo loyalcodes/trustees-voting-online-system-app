@@ -207,8 +207,24 @@ const candidateList = [
     }
 ]
 
+const notifications = [
+    {
+        id: 1,
+        title: "Consentment",
+        type: "consent",
+        content: "NamRA is happy to inform you that you are one of the top 15 nominated candidates who will stand for the election as member Trustees for the Provident Fund, please confirm if you wish to take part."
+    },
+    {
+        id: 2,
+        title: "Consentment",
+        type: "consent",
+        content: "NamRA is happy to inform you that you are one of the top 15 nominated candidates who will stand for the election as member Trustees for the Provident Fund, please confirm if you wish to take part."
+    }
+]
+
 export {
     rawData,
     candidateList,
-    departmentsList
+    departmentsList,
+    notifications
 }

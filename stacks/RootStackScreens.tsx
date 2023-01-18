@@ -1,6 +1,13 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { IntroductionScreen, LoginScreen, ForgotPasswordScreen, NominateScreen, UserScreen, UserNomineesScreen } from '../screens'
+import { IntroductionScreen,
+         LoginScreen, 
+         ForgotPasswordScreen, 
+         NominateScreen, 
+         UserScreen, 
+         UserNomineesScreen,
+         NotificationScreen
+         } from '../screens'
 
 const RootStack = createStackNavigator()
 
@@ -14,7 +21,7 @@ export default () => (
         <RootStack.Screen name='NominateScreen' component={NominateScreen} />
         <RootStack.Screen name='UserScreen' component={UserScreen} />
         <RootStack.Screen name='UserNomineesScreen' component={UserNomineesScreen} />
-       
+        <RootStack.Screen name='NotificationScreen' component={NotificationScreen} />
     </RootStack.Navigator>
 )
 
