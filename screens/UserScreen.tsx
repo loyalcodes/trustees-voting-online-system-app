@@ -58,7 +58,15 @@ export default function UserScreen(){
 
                     <View style={{flexDirection: "row", justifyContent:"space-around", marginTop: 20}}>
                             <View>
-                                <Text style={styles.statTitle}>980</Text>
+                                <View style={{alignSelf: "center"}}>
+                                    <View style={{position: "relative"}}>
+                                        <View style={{backgroundColor: Colors.light.red, height: 17, width: 17, borderRadius: 50, padding:1, justifyContent:"center", alignItems:"center", position: "absolute", zIndex: 1, marginRight: -10, marginTop: -5, marginLeft: 14}}>
+                                            <Text style={styles.statsText}>8</Text>
+                                        </View>
+                                        <Ionicons name="ios-notifications" size={25}/>
+                                    </View>
+                                </View>
+                                
                                 <Text style={styles.text}>Notifications</Text>
                             </View>
                             <View style={{backgroundColor: Colors.light.smoke, width:0.3, height: 20, alignSelf: "center"}}/>
@@ -186,6 +194,13 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         height: 50
+    },
+    statsText: {
+        fontSize: 13,
+        color: Colors.light.white,
+        alignSelf: "center",
+        fontWeight: "700",
+        marginTop: Platform.OS === 'android' ? -2 : 0
     }
 
 })
