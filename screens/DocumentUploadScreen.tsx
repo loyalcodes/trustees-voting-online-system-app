@@ -15,6 +15,7 @@ import MainHeader from "../components/header/MainHeader";
 import { notifications } from "../data";
 import ListView from "../components/candidate/ListView";
 import { rawData } from "../data";
+import * as DocumentPicker from "expo-document-picker";
 
 
 interface eligibilityType {
@@ -25,6 +26,23 @@ interface eligibilityType {
 export default function DocumentUploadScreen(){
 
     const [eligible, setEligible] = useState<eligibilityType>()
+    const [policyFile, setPolicyFile] = useState("")
+    const [financialFile, setFinancialFile] = useState("")
+
+    const onFileUpload = async (type: string) =>{
+
+        const result = await DocumentPicker.getDocumentAsync({});
+        
+
+       // console.log(name);
+
+        switch(type){
+            case 'policy':
+                break;
+            case 'financial':
+                break;
+        }
+    }
 
     useEffect( ()=>{
         const eligibleData = rawData.eligibility
@@ -48,17 +66,17 @@ export default function DocumentUploadScreen(){
 
 
                 <View style={{padding: 10}}>
-                    <TouchableOpacity onPress={()=>{}} activeOpacity={0.4} style={styles.button}>
+                    <TouchableOpacity onPress={()=>onFileUpload('policy')} activeOpacity={0.4} style={styles.button}>
                         <View style={{flexDirection: "row", alignSelf: "center"}}>
                             <AntDesign color={Colors.light.primary} size={23} name="addfile"/>
                             <Text style={{fontSize: 15, fontWeight: "600", marginLeft: 10}}>Police clearance</Text>
                         </View>
                         <AntDesign color={Colors.light.red} size={18} style={{alignSelf: "center", marginRight: 10}} name="exclamationcircleo"/>
                     </TouchableOpacity>
-                            
+                    
                     <View style={{height: 10}}/>
 
-                    <TouchableOpacity onPress={()=>{}} activeOpacity={0.4} style={styles.button}>
+                    <TouchableOpacity onPress={()=>onFileUpload('financial')} activeOpacity={0.4} style={styles.button}>
                         <View style={{flexDirection: "row", alignSelf: "center"}}>
                             <AntDesign color={Colors.light.primary} size={20} name="addfile"/>
                             <Text style={{fontSize: 15, fontWeight: "600", marginLeft: 10}}>Financial certificate</Text>
@@ -82,12 +100,14 @@ export default function DocumentUploadScreen(){
 const styles = StyleSheet.create({
     main:{
         flex: 1,
+        backgroundColor: Colors.light.white
     },
     eligibleWrapper:{
         flex:1,
         marginTop: 20,
         marginBottom:30,
         marginHorizontal:20,
+        
     },
     eligibleTitle:{
         textAlign:'left',

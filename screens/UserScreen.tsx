@@ -91,17 +91,20 @@ export default function UserScreen(){
                                 <AntDesign size={18} style={{alignSelf: "center"}} name="right"/>
                             </TouchableOpacity >
                             
-                            <View style={{height: 10}}/>
+                            <View style={{ display: 'none' }}>
 
-                            <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen" , { action: "endorse" })} activeOpacity={0.4} style={styles.button}>
-                                <View style={{flexDirection: "row", alignSelf: "center"}}>
-                                    <Feather color={Colors.light.primary} size={20} name="thumbs-up"/>
-                                    <Text style={{fontSize: 15, fontWeight: "600", marginLeft: 10}}>Endorse candidate</Text>
-                                </View>
-                                <AntDesign size={18} style={{alignSelf: "center"}} name="right"/>
-                            </TouchableOpacity >
+                                <View style={{height: 10}}/>
+
+                                <TouchableOpacity  onPress={()=>navigation.navigate("NominateScreen" , { action: "endorse" })} activeOpacity={0.4} style={styles.button}>
+                                    <View style={{flexDirection: "row", alignSelf: "center"}}>
+                                        <Feather color={Colors.light.primary} size={20} name="thumbs-up"/>
+                                        <Text style={{fontSize: 15, fontWeight: "600", marginLeft: 10}}>Endorse candidate</Text>
+                                    </View>
+                                    <AntDesign size={18} style={{alignSelf: "center"}} name="right"/>
+                                </TouchableOpacity >
+
+                            </View>
                             
-
                             <View style={{height: 10}}/>
 
                             <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen" , { action: "vote" })} activeOpacity={0.4} style={styles.button}>

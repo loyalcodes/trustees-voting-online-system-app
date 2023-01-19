@@ -46,7 +46,6 @@ export default function NotificationContentScreen( { route } : any){
           `Are you sure you want to accept?` ,
           [
             { text: `Yes`, onPress: () => {
-                    Alert.alert('Documents', 'Upload your documents')
                     navigation.navigate("DocumentUploadScreen")
             } },
             {
