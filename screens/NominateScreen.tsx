@@ -16,6 +16,7 @@ import { candidateList, departmentsList } from "../data";
 import ListView from "../components/candidate/ListView";
 import DepartmentItem from "../components/DepartmentItem";
 import Spinner from 'react-native-loading-spinner-overlay';
+import { userNominate } from "../services/ApiComms";
 
 interface CandidateType {
     name: string,
@@ -65,12 +66,13 @@ export default function NominateScreen( {route}: any ){
           action === "nominate" ? "Nomination" : "Vote",
           `Are you sure you want to ${action} ${candidate.name}?` ,
           [
-            { text: `Yes`, onPress: () => {
+            { text: `Yes`, onPress: async() => {
                 setShouldLoad(true)
-                setTimeout(()=>{
+                const response = await userNominate()
+                setShouldLoad(false)
+               // alert(JSON.stringify(response))
                     Alert.alert('Thank You!', 'Your cast has been recorded.')
                     navigation.navigate("UserScreen")
-                }, 5000)
             } },
             {
               text: 'No',

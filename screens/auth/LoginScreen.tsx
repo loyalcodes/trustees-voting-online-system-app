@@ -50,7 +50,7 @@ export default function LoginScreen(){
 
                 <View style={styles.loginWrapper}>
 
-                    <Text style={styles.loginWrapperTitle}>Sign In</Text>
+                    <Text style={styles.loginWrapperTitle}>Trustees Voting App</Text>
 
                     <View style={{marginBottom: 20, marginLeft: 20, marginRight: 20}}>
                         <Text style={{textAlign: "center", fontSize: 16}}> Use your NamRA email address and password to successfully log into the app </Text>

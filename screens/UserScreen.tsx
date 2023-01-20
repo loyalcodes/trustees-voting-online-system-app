@@ -61,7 +61,7 @@ export default function UserScreen(){
                                 <View style={{alignSelf: "center"}}>
                                     <View style={{position: "relative"}}>
                                         <View style={{backgroundColor: Colors.light.red, height: 17, width: 17, borderRadius: 50, padding:1, justifyContent:"center", alignItems:"center", position: "absolute", zIndex: 1, marginRight: -10, marginTop: -5, marginLeft: 14}}>
-                                            <Text style={styles.statsText}>8</Text>
+                                            <Text style={styles.statsText}>1</Text>
                                         </View>
                                         <Ionicons name="ios-notifications" size={25}/>
                                     </View>
@@ -71,12 +71,12 @@ export default function UserScreen(){
                             </TouchableOpacity>
                             <View style={{backgroundColor: Colors.light.smoke, width:0.3, height: 20, alignSelf: "center"}}/>
                             <TouchableOpacity onPress={()=>navigation.navigate("UserNomineesScreen", { action : 'nominate' })}>
-                                <Text style={styles.statTitle}>70</Text>
+                                <Text style={styles.statTitle}>1</Text>
                                 <Text style={styles.text}>My Nominees</Text>
                             </TouchableOpacity>
                             <View style={{backgroundColor: Colors.light.smoke, width:0.3, height: 20, alignSelf: "center"}}/>
                             <TouchableOpacity onPress={()=>navigation.navigate("UserNomineesScreen", { action : 'vote' })}>
-                                <Text style={styles.statTitle}>16</Text>
+                                <Text style={styles.statTitle}>1</Text>
                                 <Text style={styles.text}>My Votes</Text>
                             </TouchableOpacity>
                     </View>
