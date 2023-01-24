@@ -7,10 +7,7 @@ export const readLocalStorageObject  = async (name : string) =>{
     try{
         const data = (await AsyncStorage.getItem(name)) || ""
         if(data !== ""){
-            return {
-                message : "success",
-                data : JSON.parse(data)
-            }
+            return JSON.parse(data)
         }else{
             return {
                 message : "success",

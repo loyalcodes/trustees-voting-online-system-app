@@ -33,6 +33,7 @@ export default function App() {
         return {
           ...prevState,
           userToken: action.token,
+          state: action.state,
           isLoading: false,
         };
       case "LOGOUT":
@@ -51,7 +52,9 @@ export default function App() {
 
   const authContext = React.useMemo(
     () => ({
-      signIn: async () => {},
+      signIn: async () => {
+         dispatch({ type: "LOGIN", token: "token", state: true });
+        },
       signOut: async () => {}
     }),
     []

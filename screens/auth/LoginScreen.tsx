@@ -12,12 +12,16 @@ import {
 import Colors from "../../constants/Colors";
 import { showAlertPopup } from "../../helper/Alerts";
 import { useNavigation } from "@react-navigation/native";
+import { userAuth } from "../../services/ApiComms";
+import { AuthContext } from "../../components/Context";
+import { writeLocalStorageObject } from '../../helper/LocalStorage'
 
 export default function LoginScreen(){
 
     const [email, setEmail] = useState<String>("")
     const [password, setPassword] = useState<String>("")
     const navigation = useNavigation()
+    const { signIn } = React.useContext(AuthContext);
 
     const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
 
@@ -29,13 +33,25 @@ export default function LoginScreen(){
           );
       };
 
-    const onLogin = () =>{
+    const onLogin = async () =>{
         if(email.trim() === "" || password === ""){
             showAlertPopup("Required", "All fields are required")
         }else if(!validateEmail(email)){
             showAlertPopup("Invalid", "Please enter a valid email address")
         }else{
-            navigation.navigate("IntroductionScreen")
+            const response = await userAuth(email, password)
+            const { auth, data } = response
+            if(auth.status === "success"){
+              const { message } = await writeLocalStorageObject('userData', response)
+              if(message === "success") {
+                signIn()
+              }else{
+                showAlertPopup("Fatal error", "Couldn't write to storage.")
+              }
+            }else{
+                showAlertPopup("Login", "Wrong login details provided. Try again")
+            }
+            //navigation.navigate("IntroductionScreen")
         }
     }
 
@@ -102,3 +118,5 @@ export default function LoginScreen(){
     )
 
 }
+
+

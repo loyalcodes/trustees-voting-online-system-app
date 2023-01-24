@@ -12,10 +12,12 @@ import {
 
   import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { readLocalStorageObject } from "../helper/LocalStorage";
 
 export default function UserScreen(){
 
     const navigation = useNavigation()
+    const [userData, setUserData] = useState()
 
     const onSignOutHandler = () => {
         Alert.alert(
@@ -34,6 +36,22 @@ export default function UserScreen(){
           { cancelable: false }
         );
       };
+
+    const loadUserData = async () => {
+        const result = await readLocalStorageObject('userData')
+        const { data } = result
+        const userData = data.map((i)=>{
+            return {
+                employee_id: i.EMPLOYEE_ID
+            }
+        })
+        setUserData(data)
+        alert(JSON.stringify(data))
+    }  
+
+    useEffect(()=>{
+        loadUserData()
+    },[])
 
     return(
         <>
