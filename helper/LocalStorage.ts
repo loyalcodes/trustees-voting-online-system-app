@@ -9,10 +9,7 @@ export const readLocalStorageObject  = async (name : string) =>{
         if(data !== ""){
             return JSON.parse(data)
         }else{
-            return {
-                message : "success",
-                data : null
-            }
+            return null
         }   
         
     } catch (e) {

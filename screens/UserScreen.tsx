@@ -38,7 +38,7 @@ export default function UserScreen(){
 
     const navigation = useNavigation()
     const [userData, setUserData] = useState<UserProps>()
-    const [userStats, setUserStats] = useState<UserStats>()
+    const [userStats, setUserStats] = useState<UserStats>({ nominees: 0, votes: 0 })
 
     const onSignOutHandler = () => {
         Alert.alert(
@@ -80,7 +80,7 @@ export default function UserScreen(){
     }
     
     const loadUserData = async (id: any) => {
-        const response = await UserData()
+        const response = await UserData(id)
         const { nominees, votes } = response
         
         if(response != undefined || response != null) {

@@ -1,22 +1,6 @@
 import { API_BASE_URL } from "../constants/Config";
 
-const userData = async () =>{
-
-  const temp = {
-      id: 304
-  }
-
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-
-  var raw = JSON.stringify(temp);
-
-  var requestOptions = {
-      method: 'GET',
-      body: raw,
-      redirect: 'follow'
-    };
-
+const userData = async (id: any) =>{
     return await fetch(API_BASE_URL+"/users/data")
     .then(async response => {
       const { data } = JSON.parse(await response.text());
@@ -28,6 +12,21 @@ const userData = async () =>{
     .catch(error => {
       return error;
     });
+
+}
+
+const getCandidates = async () =>{
+  return await fetch(API_BASE_URL+"/users")
+  .then(async response => {
+    const { data } = JSON.parse(await response.text());
+    return data;
+  })
+  .then(result => {
+    return result;
+  })
+  .catch(error => {
+    return error;
+  });
 
 }
 
@@ -103,5 +102,6 @@ const userNominate = async () =>{
 export {
     userNominate,
     userAuth,
-    userData
+    userData,
+    getCandidates
 }

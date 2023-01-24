@@ -16,16 +16,53 @@ import { candidateList, departmentsList } from "../data";
 import ListView from "../components/candidate/ListView";
 import DepartmentItem from "../components/DepartmentItem";
 import Spinner from 'react-native-loading-spinner-overlay';
-import { userNominate } from "../services/ApiComms";
+import { getCandidates, userNominate } from "../services/ApiComms";
+import { readLocalStorageObject, writeLocalStorageObject } from "../helper/LocalStorage";
 
 interface CandidateType {
-    name: string,
-    department: string
+    EMPLOYEE_ID: string,
+    EMPOYEE_CODE: string,
+    TITLE: string,
+    INITIAL: string,
+    NAME: string,
+    SURNAME: string,
+    GENDER: number,
+    GENDER_DESC: string,
+    CONTACT_NUMBER: string,
+    EMAIL: string,
+    POSITION: number,
+    POS_DESC: string,
+    JOB_GRADE: number,
+    JOB_GRADE_DESC: string,
+    BUSINESS_UNIT: number,
+    BUSINESS_UNIT_DESC: string,
+    STAFF_CATEGORY: number,
+    CONTRACT_TYPE_DESC: string,
+    DUTY_STATION: number,
+    STATION_DESC: string
 }
 interface CandidateListType {
     item: {
-        name: string,
-        department: string
+        EMPLOYEE_ID: string,
+        EMPOYEE_CODE: string,
+        TITLE: string,
+        INITIAL: string,
+        NAME: string,
+        SURNAME: string,
+        GENDER: number,
+        GENDER_DESC: string,
+        CONTACT_NUMBER: string,
+        EMAIL: string,
+        POSITION: number,
+        POS_DESC: string,
+        JOB_GRADE: number,
+        JOB_GRADE_DESC: string,
+        BUSINESS_UNIT: number,
+        BUSINESS_UNIT_DESC: string,
+        STAFF_CATEGORY: number,
+        CONTRACT_TYPE_DESC: string,
+        DUTY_STATION: number,
+        STATION_DESC: string
     }
 }
 interface DepartmentProps {
@@ -118,12 +155,38 @@ export default function NominateScreen( {route}: any ){
         }
     }
 
+    const loadContent = async (action: any) => {
+
+        /**
+         * CHECK IF WE HAVE DATA ON LOCAL STORAGE FIRST
+         */
+        const offlineData = await readLocalStorageObject("candidatesListData")
+        if(offlineData != undefined || offlineData != null){
+            /** LOAD OFFLINE DATA */
+            setCandidates(offlineData)
+
+            /** UPDATE WITH LIVE DATA { IN THE BACKGROUND } */
+            const response = await getCandidates()
+            setCandidates(response)
+            await writeLocalStorageObject("candidatesListData", response) // SAVE DATA TO LOCAL STORAGE
+        }else{
+            setShouldLoad(true)
+            const response = await getCandidates()
+            setCandidates(response)
+            await writeLocalStorageObject("candidatesListData", response)
+            setShouldLoad(false)
+        }
+        
+        
+        
+    }
+
     useEffect(()=>{
         const { action } = route.params
         setAction(action)
         loadCandidates()
         render(action)
-            
+        loadContent(action) 
     }, [])
 
     return(
