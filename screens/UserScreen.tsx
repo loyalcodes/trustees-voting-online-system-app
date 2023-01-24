@@ -13,11 +13,32 @@ import {
   import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { readLocalStorageObject } from "../helper/LocalStorage";
+import {  userData as UserData } from "../services/ApiComms";
+
+interface UserProps {
+    employee_id: string,
+    title: string,
+    initials: string,
+    fullname: string,
+    firstname: string,
+    surname: string,
+    email: string,
+    jobDescription: string,
+    department: string,
+    station: string,
+    position: string
+}
+
+interface UserStats {
+    nominees: number,
+    votes: number
+}
 
 export default function UserScreen(){
 
     const navigation = useNavigation()
-    const [userData, setUserData] = useState()
+    const [userData, setUserData] = useState<UserProps>()
+    const [userStats, setUserStats] = useState<UserStats>()
 
     const onSignOutHandler = () => {
         Alert.alert(
@@ -37,20 +58,50 @@ export default function UserScreen(){
         );
       };
 
-    const loadUserData = async () => {
+    const loadUserLocalData = async () => {
         const result = await readLocalStorageObject('userData')
-        const { data } = result
-        const userData = data.map((i)=>{
-            return {
-                employee_id: i.EMPLOYEE_ID
-            }
-        })
-        setUserData(data)
-        alert(JSON.stringify(data))
-    }  
+        const { data, userProfile } = result
+        const a = userProfile[0]
+        const obj = {
+            employee_id: a.EMPLOYEE_ID,
+            title: a.TITLE,
+            initials: a.INITIAL,
+            firstname: a.NAME,
+            fullname: a.NAME + ' ' + a.SURNAME,
+            surname: a.SURNAME,
+            email: a.EMAIL,
+            jobDescription: a.JOB_GRADE_DESC,
+            department: a.BUSINESS_UNIT_DESC,
+            station: a.STATION_DESC,
+            position: a.POS_DESC
+        }
+        setUserData(obj)
+        loadUserData(a.EMPLOYEE_ID)
+    }
+    
+    const loadUserData = async (id: any) => {
+        const response = await UserData()
+        const { nominees, votes } = response
+        
+        if(response != undefined || response != null) {
+            setUserStats(
+                {
+                    nominees: nominees.length || 0,
+                    votes: votes.length || 0  
+                }
+            )
+        }else{
+            setUserStats(
+                {
+                    nominees: 0,
+                    votes: 0  
+                }
+            )
+        }
+    }
 
     useEffect(()=>{
-        loadUserData()
+        loadUserLocalData()
     },[])
 
     return(
@@ -67,9 +118,9 @@ export default function UserScreen(){
                     </View>
 
                     <View style={styles.infoWrapper}>
-                        <Text style={styles.infoName}>Mateus N. Johannes</Text>
-                        <Text style={styles.infoPosition}>Application Developer</Text>
-                        <Text style={styles.infoDepartment}>ICT</Text>
+                        <Text style={styles.infoName}> { userData?.fullname } </Text>
+                        <Text style={styles.infoPosition}> { userData?.position } </Text>
+                        <Text style={styles.infoDepartment}> { userData?.department } </Text>
                     </View>
 
                     <View style={{height:0.2, backgroundColor: Colors.light.smoke, marginTop: 20, marginLeft: 16, marginRight: 16}}/>
@@ -79,7 +130,7 @@ export default function UserScreen(){
                                 <View style={{alignSelf: "center"}}>
                                     <View style={{position: "relative"}}>
                                         <View style={{backgroundColor: Colors.light.red, height: 17, width: 17, borderRadius: 50, padding:1, justifyContent:"center", alignItems:"center", position: "absolute", zIndex: 1, marginRight: -10, marginTop: -5, marginLeft: 14}}>
-                                            <Text style={styles.statsText}>1</Text>
+                                            <Text style={styles.statsText}>0</Text>
                                         </View>
                                         <Ionicons name="ios-notifications" size={25}/>
                                     </View>
@@ -89,12 +140,12 @@ export default function UserScreen(){
                             </TouchableOpacity>
                             <View style={{backgroundColor: Colors.light.smoke, width:0.3, height: 20, alignSelf: "center"}}/>
                             <TouchableOpacity onPress={()=>navigation.navigate("UserNomineesScreen", { action : 'nominate' })}>
-                                <Text style={styles.statTitle}>1</Text>
+                                <Text style={styles.statTitle}> { userStats?.nominees } </Text>
                                 <Text style={styles.text}>My Nominees</Text>
                             </TouchableOpacity>
                             <View style={{backgroundColor: Colors.light.smoke, width:0.3, height: 20, alignSelf: "center"}}/>
                             <TouchableOpacity onPress={()=>navigation.navigate("UserNomineesScreen", { action : 'vote' })}>
-                                <Text style={styles.statTitle}>1</Text>
+                                <Text style={styles.statTitle}> { userStats?.votes } </Text>
                                 <Text style={styles.text}>My Votes</Text>
                             </TouchableOpacity>
                     </View>

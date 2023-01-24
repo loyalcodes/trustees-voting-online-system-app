@@ -1,5 +1,36 @@
 import { API_BASE_URL } from "../constants/Config";
 
+const userData = async () =>{
+
+  const temp = {
+      id: 304
+  }
+
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  var raw = JSON.stringify(temp);
+
+  var requestOptions = {
+      method: 'GET',
+      body: raw,
+      redirect: 'follow'
+    };
+
+    return await fetch(API_BASE_URL+"/users/data")
+    .then(async response => {
+      const { data } = JSON.parse(await response.text());
+      return data;
+    })
+    .then(result => {
+      return result;
+    })
+    .catch(error => {
+      return error;
+    });
+
+}
+
 const userAuth = async (email: String, password: String) =>{
 
   const temp = {
@@ -36,7 +67,7 @@ const userAuth = async (email: String, password: String) =>{
 const userNominate = async () =>{
 
     const temp = {
-        nominee_id: 145,
+        nominee_id: 304,
         elected_by: 147,
         election_id : 1
     }
@@ -71,5 +102,6 @@ const userNominate = async () =>{
 
 export {
     userNominate,
-    userAuth
+    userAuth,
+    userData
 }
