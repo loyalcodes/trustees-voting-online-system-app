@@ -16,7 +16,7 @@ import { candidateList, departmentsList } from "../data";
 import ListView from "../components/candidate/ListView";
 import DepartmentItem from "../components/DepartmentItem";
 import Spinner from 'react-native-loading-spinner-overlay';
-import { getCandidates, userNominate } from "../services/ApiComms";
+import { getCandidates, userNominate, userVote } from "../services/ApiComms";
 import { readLocalStorageObject, writeLocalStorageObject } from "../helper/LocalStorage";
 
 interface CandidateType {
@@ -101,15 +101,38 @@ export default function NominateScreen( {route}: any ){
     const onVoteNominateHandler = (candidate: CandidateType) => {
         Alert.alert(
           action === "nominate" ? "Nomination" : "Vote",
-          `Are you sure you want to ${action} ${candidate.name}?` ,
+          `Are you sure you want to ${action} ${candidate.NAME}?` ,
           [
             { text: `Yes`, onPress: async() => {
                 setShouldLoad(true)
-                const response = await userNominate()
+                switch(action){
+                    case 'nominate':
+                        const response = await userNominate(candidate.EMPLOYEE_ID)
+                        if(response.rowsAffected){
+                        Alert.alert('Thank You!', 'Your cast has been recorded.')
+                        navigation.navigate("UserScreen")
+                        }else{
+                            Alert.alert('Failed', 'There was a problem while nominating')
+                        }
+                            console.log(response)
+                        break;
+                    case 'vote':
+                        const voteResponse = await userVote(candidate.EMPLOYEE_ID)
+                        //const { rowsAffected } = response
+                        if(voteResponse.rowsAffected){
+                            Alert.alert('Thank You!', 'Your cast has been recorded.')
+                            navigation.navigate("UserScreen")
+                        }else{
+                            Alert.alert('Failed', 'There was a problem while voting')
+                        }
+                        console.log(voteResponse)
+                        break;
+                }
+                
                 setShouldLoad(false)
                // alert(JSON.stringify(response))
-                    Alert.alert('Thank You!', 'Your cast has been recorded.')
-                    navigation.navigate("UserScreen")
+                   // Alert.alert('Thank You!', 'Your cast has been recorded.')
+                   // navigation.navigate("UserScreen")
             } },
             {
               text: 'No',

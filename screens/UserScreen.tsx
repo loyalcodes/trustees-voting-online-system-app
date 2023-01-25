@@ -12,8 +12,10 @@ import {
 
   import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { readLocalStorageObject } from "../helper/LocalStorage";
+import { readLocalStorageObject, removeLocalStorageObj } from "../helper/LocalStorage";
 import {  userData as UserData } from "../services/ApiComms";
+import { AuthContext } from "../components/Context";
+
 
 interface UserProps {
     employee_id: string,
@@ -39,14 +41,18 @@ export default function UserScreen(){
     const navigation = useNavigation()
     const [userData, setUserData] = useState<UserProps>()
     const [userStats, setUserStats] = useState<UserStats>({ nominees: 0, votes: 0 })
+    const { signOut } = React.useContext(AuthContext);
 
     const onSignOutHandler = () => {
         Alert.alert(
           'Sign out',
           `Are you sure you want to signout?` ,
           [
-            { text: `Yes`, onPress: () => {
-                navigation.navigate("LoginScreen")
+            { text: `Yes`, onPress: async () => {
+                
+                setTimeout(()=>{
+                    signOut()
+                },1000)
             } },
             {
               text: 'No',
@@ -60,7 +66,8 @@ export default function UserScreen(){
 
     const loadUserLocalData = async () => {
         const result = await readLocalStorageObject('userData')
-        const { data, userProfile } = result
+        if(result != null){
+            const { userProfile } = result
         const a = userProfile[0]
         const obj = {
             employee_id: a.EMPLOYEE_ID,
@@ -77,17 +84,20 @@ export default function UserScreen(){
         }
         setUserData(obj)
         loadUserData(a.EMPLOYEE_ID)
+        }
+
     }
     
     const loadUserData = async (id: any) => {
         const response = await UserData(id)
         const { nominees, votes } = response
-        
+        const nomineeObj = nominees[0]
+        const votesObj = votes[0]
         if(response != undefined || response != null) {
             setUserStats(
                 {
-                    nominees: nominees.length || 0,
-                    votes: votes.length || 0  
+                    nominees: nomineeObj.length || 0,
+                    votes: votesObj.length || 0  
                 }
             )
         }else{
@@ -113,8 +123,10 @@ export default function UserScreen(){
                 <Image style={{width: 150,height: 80, borderRadius: 50, alignSelf:"center", marginTop: 20}} resizeMode="contain" source={require('../assets/images/logo_white.png')}/>
                 </View>
                 <View style={styles.bottomContainer}>
-                    <View style={styles.imageWrapper}>
-                        <Image style={{width: 80,height: 80, borderRadius: 50}} resizeMode="contain" source={require('../assets/images/user.jpg')}/>
+                <View style={styles.imageWrapper}>
+                        <View style={styles.imageInnerWrapper}>
+                            <Text style={styles.avatarText} >{ userData?.initials }</Text>
+                        </View>
                     </View>
 
                     <View style={styles.infoWrapper}>
@@ -126,26 +138,20 @@ export default function UserScreen(){
                     <View style={{height:0.2, backgroundColor: Colors.light.smoke, marginTop: 20, marginLeft: 16, marginRight: 16}}/>
 
                     <View style={{flexDirection: "row", justifyContent:"space-around", marginTop: 20}}>
-                            <TouchableOpacity onPress={()=>navigation.navigate("NotificationScreen")}>
-                                <View style={{alignSelf: "center"}}>
-                                    <View style={{position: "relative"}}>
-                                        <View style={{backgroundColor: Colors.light.red, height: 17, width: 17, borderRadius: 50, padding:1, justifyContent:"center", alignItems:"center", position: "absolute", zIndex: 1, marginRight: -10, marginTop: -5, marginLeft: 14}}>
-                                            <Text style={styles.statsText}>0</Text>
-                                        </View>
-                                        <Ionicons name="ios-notifications" size={25}/>
-                                    </View>
+                    <TouchableOpacity onPress={()=>navigation.navigate("UserProfileScreen")}>
+                                <View style={{alignSelf:"center", marginBottom:4, marginTop:4}}>
+                                    <FontAwesome5 name="edit" size={18} color={Colors.light.semiSecondary} />
                                 </View>
-                                
-                                <Text style={styles.text}>Notifications</Text>
+                                <Text style={styles.text}>Edit Profile</Text>
                             </TouchableOpacity>
                             <View style={{backgroundColor: Colors.light.smoke, width:0.3, height: 20, alignSelf: "center"}}/>
                             <TouchableOpacity onPress={()=>navigation.navigate("UserNomineesScreen", { action : 'nominate' })}>
-                                <Text style={styles.statTitle}> { userStats?.nominees } </Text>
+                                <Text style={styles.statTitle}> { userStats.nominees } </Text>
                                 <Text style={styles.text}>My Nominees</Text>
                             </TouchableOpacity>
                             <View style={{backgroundColor: Colors.light.smoke, width:0.3, height: 20, alignSelf: "center"}}/>
                             <TouchableOpacity onPress={()=>navigation.navigate("UserNomineesScreen", { action : 'vote' })}>
-                                <Text style={styles.statTitle}> { userStats?.votes } </Text>
+                                <Text style={styles.statTitle}> { userStats.votes } </Text>
                                 <Text style={styles.text}>My Votes</Text>
                             </TouchableOpacity>
                     </View>
@@ -272,6 +278,25 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         fontWeight: "700",
         marginTop: Platform.OS === 'android' ? -2 : 0
+    },
+    imageInnerWrapper: {
+        width: 87,
+        height: 87,
+        backgroundColor: Colors.light.semiSecondary,
+        position: "absolute",
+        alignSelf: "center",
+        marginTop: -40,
+        borderRadius: 50,
+        borderColor:Colors.light.primary,
+        borderWidth:2,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    avatarText:{
+        fontWeight: "500",
+        fontSize: 28,
+        color: Colors.light.white,
+        
     }
 
 })

@@ -70,3 +70,15 @@ export const readLocalStorageString  = async (name : string) =>{
         }
     }
 }
+
+export const removeLocalStorageObj = async (name: string) => {
+    try{
+        await AsyncStorage.removeItem(name)
+        
+    } catch (e) {
+        return {
+            message : "failed",
+            error : e
+        }
+    }
+}

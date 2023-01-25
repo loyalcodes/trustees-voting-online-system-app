@@ -1,7 +1,11 @@
 import { API_BASE_URL } from "../constants/Config";
+import { readLocalStorageObject } from "../helper/LocalStorage";
 
 const userData = async (id: any) =>{
-    return await fetch(API_BASE_URL+"/users/data")
+    const user = await readLocalStorageObject("userData")
+    const { userProfile } = user
+    const userId = userProfile[0].EMPLOYEE_ID
+    return await fetch(API_BASE_URL+"/users/data/"+id)
     .then(async response => {
       const { data } = JSON.parse(await response.text());
       return data;
@@ -63,11 +67,14 @@ const userAuth = async (email: String, password: String) =>{
 
 }
 
-const userNominate = async () =>{
+const userNominate = async (id: any) =>{
+const user = await readLocalStorageObject("userData")
+const { userProfile } = user
+const userId = userProfile[0].EMPLOYEE_ID
 
     const temp = {
-        nominee_id: 304,
-        elected_by: 147,
+        nominee_id: id,
+        elected_by: userId,
         election_id : 1
     }
 
@@ -99,9 +106,50 @@ const userNominate = async () =>{
 
 }
 
+
+const userVote = async (id: any) =>{
+  const user = await readLocalStorageObject("userData")
+  const { userProfile } = user
+  const userId = userProfile[0].EMPLOYEE_ID
+  
+      const temp = {
+          nominee_id: id,
+          elected_by: userId,
+          election_id : 1
+      }
+  
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+  
+      var raw = JSON.stringify(temp);
+  
+      var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+  
+        return await fetch(API_BASE_URL+"/vote/new", requestOptions)
+        .then(async response => {
+          const { data } = JSON.parse(await response.text());
+          
+          return data;
+        })
+        .then(result => {
+          return result;
+        })
+        .catch(error => {
+          console.log('ERROR:======', error)
+          return error;
+        });
+  
+  }
+
 export {
     userNominate,
     userAuth,
     userData,
-    getCandidates
+    getCandidates,
+    userVote
 }

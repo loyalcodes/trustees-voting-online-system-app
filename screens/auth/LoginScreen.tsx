@@ -15,6 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import { userAuth } from "../../services/ApiComms";
 import { AuthContext } from "../../components/Context";
 import { writeLocalStorageObject } from '../../helper/LocalStorage'
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function LoginScreen(){
 
@@ -22,6 +23,7 @@ export default function LoginScreen(){
     const [password, setPassword] = useState<String>("")
     const navigation = useNavigation()
     const { signIn } = React.useContext(AuthContext);
+    const [shouldLoad, setShouldLoad] = useState(false)
 
     const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
 
@@ -39,7 +41,9 @@ export default function LoginScreen(){
         }else if(!validateEmail(email)){
             showAlertPopup("Invalid", "Please enter a valid email address")
         }else{
+            setShouldLoad(true)
             const response = await userAuth(email, password)
+            setShouldLoad(false)
             const { auth, data } = response
             if(auth.status === "success"){
               const { message } = await writeLocalStorageObject('userData', response)
@@ -59,6 +63,11 @@ export default function LoginScreen(){
         <>
             <SafeAreaView style={styles.main}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : 'height'} keyboardVerticalOffset={keyboardVerticalOffset}>
+            <Spinner
+            visible={shouldLoad}
+            textContent={'Please wait...'}
+            textStyle={{color: '#FFF',marginTop:-60}}
+            />
             <StatusBar barStyle={ Platform.OS === 'ios'  ? 'dark-content' : 'light-content'}/>
                 <View style={styles.logoWrapper}>
                     <Image resizeMode="contain" style={styles.logo} source={require("../../assets/images/logo.png")}/>

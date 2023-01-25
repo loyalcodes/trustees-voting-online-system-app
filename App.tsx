@@ -1,5 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View , StatusBar} from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from "./components/Context";
@@ -15,10 +15,12 @@ import IntroductionScreen from './screens/IntroductionScreen';
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
+  const [logStatus, setLogStatus] = useState(false)
 
   const initialLoginState = {
     isLoading: true,
-    state: false
+    state: false,
+    userToken: null,
   };
 
   const loginReducer = (prevState: any, action: any) => {
@@ -53,24 +55,30 @@ export default function App() {
   const authContext = React.useMemo(
     () => ({
       signIn: async () => {
-         dispatch({ type: "LOGIN", token: "token", state: true });
+        dispatch({ type: "LOGIN", id: "4354", token: "token" });
         },
-      signOut: async () => {}
+      signOut: async () => {
+        dispatch({ type: "RETRIEVE_TOKEN", token: null });
+      }
     }),
     []
 );
 
 //Check user loggin history
 const checkLogHistory = async () => {
-  const { message, data } = await readLocalStorageObject("@storage_UserDataKey")
-  if(data === null){
-      //User not logged in
+  const result = await readLocalStorageObject("userData")
+  if(result === null || result === undefined){
+    dispatch({ type: "RETRIEVE_TOKEN", token: null });
+  }else{
+    dispatch({ type: "RETRIEVE_TOKEN", token: "token" });
   }
+  
 }
 
   useEffect (() =>{
     setTimeout(() => {
       checkLogHistory()
+     // alert(loginState.userToken)
     }, 1000)
   }, [])
 
@@ -92,7 +100,7 @@ const checkLogHistory = async () => {
         <AuthContext.Provider value={ authContext }>
           <StatusBar barStyle="dark-content"/>
         {
-          loginState.state ? (
+          loginState.userToken !== null ? (
             <NavigationContainer>
               <UserStackScreens/> 
             </NavigationContainer>
