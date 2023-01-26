@@ -10,17 +10,14 @@ import {
 import { StyleSheet, View, Text, Platform, TouchableOpacity, Image } from "react-native";
 import Colors from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
+import { EmployeeProps } from "../../types"
 
 interface Props {
-    onVoteNominateHandler: any,
+    onRemoveNominateVoteHandler: any,
     action: string,
-    item: {
-        name: string,
-        department: string,
-        position: string
-    }
+    item: EmployeeProps
 }
-export default ( {item, onVoteNominateHandler, action} : Props ) =>{
+export default ( {item, onRemoveNominateVoteHandler, action} : Props ) =>{
 
     const navigation = useNavigation()
     const [actionType, setActionType] = useState<string>("")
@@ -45,15 +42,17 @@ export default ( {item, onVoteNominateHandler, action} : Props ) =>{
            <View style={styles.main}>
                 <View style={styles.firstInner}>
                     <View style={styles.imageWrapper}>
-                        <Image source={require('../../assets/images/user.jpg')} style={styles.image} />
+                        <View style={{backgroundColor: Colors.light.semiSecondary, width: 60, height: 60, borderRadius: 50, alignSelf: "center", justifyContent: "center"}}>
+                            <Text style={{color: Colors.light.white, alignSelf:"center", fontWeight: "600"}}> { item.INITIAL } </Text>
+                        </View>
                     </View>
                     <View style={styles.details}>
-                        <Text numberOfLines={2} style={styles.detailName}> { item.name } </Text>
-                        <Text style={[styles.detailDepartment, { fontSize: 15}]}> { item.position } </Text>
-                        <Text style={[styles.detailDepartment, { color: Colors.light.primary }]}> { item.department } </Text>
+                        <Text numberOfLines={2} style={styles.detailName}> { item.NAME } {  item.SURNAME }</Text>
+                        <Text style={[styles.detailDepartment, { fontSize: 15}]}> { item.POS_DESC } </Text>
+                        <Text style={[styles.detailDepartment, { color: Colors.light.primary }]}> { item.BUSINESS_UNIT_DESC } </Text>
                     </View>
                 </View>
-                <TouchableOpacity onPress={()=>onVoteNominateHandler(item)} style={styles.button} activeOpacity={0.4}>
+                <TouchableOpacity onPress={()=>onRemoveNominateVoteHandler(item)} style={styles.button} activeOpacity={0.4}>
                     <AntDesign style={styles.buttonIcon} color={Colors.light.white} size={14} name="close"/>
                     <Text style={styles.buttonText}> Remove </Text>
                 </TouchableOpacity>
@@ -100,7 +99,8 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 5,
         width: 70,
-        height: 70
+        height: 70,
+        justifyContent: "center"
     },
     button: {
         backgroundColor: Colors.light.red,

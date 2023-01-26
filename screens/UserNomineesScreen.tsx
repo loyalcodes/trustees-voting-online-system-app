@@ -17,16 +17,16 @@ import ListView from "../components/candidate/ListView";
 import DepartmentItem from "../components/DepartmentItem";
 import Spinner from 'react-native-loading-spinner-overlay';
 import UserNomineeVoteItem from "../components/candidate/UserNomineeVoteItem";
+import { userData as UserData, userRemoveNomination } from "../services/ApiComms";
+import { readLocalStorageObject } from "../helper/LocalStorage";
+import { EmployeeProps } from "../types";
 
 interface CandidateType {
     name: string,
     department: string
 }
 interface CandidateListType {
-    item: {
-        name: string,
-        department: string
-    }
+    item: EmployeeProps
 }
 interface DepartmentProps {
     id: number,
@@ -51,25 +51,32 @@ export default function UserNomineesScreen( {route}: any ){
     const [title, setTitle] = useState("")
     const [shouldLoad, setShouldLoad] = useState(false)
     const [currentDepartment, setCurrentDepartment] = useState("All")
+    const [nomineesList, setNomineesList] = useState([])
+    const [data, setData] = useState([])
 
     const loadCandidates = () =>{        
-        const data = candidateList
         const departments = departmentsList
-        setCandidates(data)
         setDepartments(departments)
     }
 
-    const onVoteNominateHandler = (candidate: CandidateType) => {
+   // const onRemoveNominateVoteHandler = () => {
+       // userRemoveNomination
+    //}
+
+    const onRemoveNominateVoteHandler = (candidate: EmployeeProps) => {
         Alert.alert(
           action === "nominate" ? "Nomination" : "Vote",
-          `Are you sure you want to remove ${candidate.name} from your list?` ,
+          `Are you sure you want to remove ${candidate.NAME} from your list?` ,
           [
-            { text: `Yes`, onPress: () => {
+            { text: `Yes`, onPress: async () => {
                 setShouldLoad(true)
-                setTimeout(()=>{
+                const response = await userRemoveNomination()
+                if(response.rowsAffected){
                     Alert.alert('Thank You!', 'Your cast has been recorded.')
                     navigation.navigate("UserScreen")
-                }, 5000)
+                    }else{
+                    Alert.alert('Failed', 'There was a problem while updating')
+                }
             } },
             {
               text: 'No',
@@ -112,12 +119,30 @@ export default function UserNomineesScreen( {route}: any ){
         }
     }
 
+    const loadUserData = async (action: string) => {
+
+        //GET USER ID
+        const user = await readLocalStorageObject("userData")
+        const { userProfile } = user
+        const userId = userProfile[0].EMPLOYEE_ID
+        
+        const response = await UserData(userId)
+        const { nominees, votes } = response
+
+        if(action === "nominate"){
+            setData(nominees)
+        }
+        if(action === "vote"){
+            setData(votes)
+        }
+    }
+
     useEffect(()=>{
         const { action } = route.params
         setAction(action)
         loadCandidates()
         render(action)
-            
+        loadUserData(action)
     }, [])
 
     return(
@@ -132,9 +157,13 @@ export default function UserNomineesScreen( {route}: any ){
                 <MainHeader hasArrow title={title}/>
               
 
+              <View style={{alignSelf:"center", marginTop: 50, display: data.length || data == null ? 'none' : 'flex'}}>
+                <Text style={{fontWeight: "600", fontSize: 16}}> You have no { action === "nominee" ? "nominations" : "votes" } yet. </Text>
+              </View>
+
                 <FlatList
-                data={candidates}
-                renderItem={ ({item} : CandidateListType) =><UserNomineeVoteItem action={action} onVoteNominateHandler={onVoteNominateHandler}  item={item}/>}
+                data={data}
+                renderItem={ ({item} : CandidateListType) =><UserNomineeVoteItem action={action} onRemoveNominateVoteHandler={onRemoveNominateVoteHandler}  item={item}/>}
                 />
 
                 <View style={{}}/>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, View, Text, TextInput, TouchableOpacity, StatusBar, SafeAreaView, Platform, KeyboardAvoidingView } from "react-native";
 import { styles } from "./styles";
 import {
@@ -58,6 +58,10 @@ export default function LoginScreen(){
             //navigation.navigate("IntroductionScreen")
         }
     }
+
+    useEffect(()=>{
+       // alert('login')
+    })
 
     return(
         <>

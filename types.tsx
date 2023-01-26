@@ -33,3 +33,26 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> = Composit
   BottomTabScreenProps<RootTabParamList, Screen>,
   NativeStackScreenProps<RootStackParamList>
 >;
+
+export type EmployeeProps = {
+    EMPLOYEE_ID: number,
+    EMPOYEE_CODE: string,
+    TITLE: string,
+    INITIAL: string,
+    NAME: string,
+    SURNAME: string,
+    GENDER: number,
+    GENDER_DESC: string,
+    CONTACT_NUMBER: string,
+    EMAIL: string,
+    POSITION: number,
+    POS_DESC: string,
+    JOB_GRADE: number,
+    JOB_GRADE_DESC: string,
+    BUSINESS_UNIT: number,
+    BUSINESS_UNIT_DESC:string,
+    STAFF_CATEGORY: number,
+    CONTRACT_TYPE_DESC: string,
+    DUTY_STATION: number,
+    STATION_DESC: string
+}

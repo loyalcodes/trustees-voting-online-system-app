@@ -106,6 +106,43 @@ const userId = userProfile[0].EMPLOYEE_ID
 
 }
 
+const userRemoveNomination = async () =>{
+  const user = await readLocalStorageObject("userData")
+  const { userProfile } = user
+  const userId = userProfile[0].EMPLOYEE_ID
+  
+      const temp = {
+          userId: userId
+      }
+  
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+  
+      var raw = JSON.stringify(temp);
+  
+      var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+  
+        return await fetch(API_BASE_URL+"/nominee/remove/by-user", requestOptions)
+        .then(async response => {
+          const { data } = JSON.parse(await response.text());
+          
+          return data;
+        })
+        .then(result => {
+          return result;
+        })
+        .catch(error => {
+          console.log('ERROR:======', error)
+          return error;
+        });
+  
+  }
+
 
 const userVote = async (id: any) =>{
   const user = await readLocalStorageObject("userData")
@@ -151,5 +188,6 @@ export {
     userAuth,
     userData,
     getCandidates,
-    userVote
+    userVote,
+    userRemoveNomination
 }

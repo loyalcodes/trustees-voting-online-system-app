@@ -50,9 +50,8 @@ export default function UserScreen(){
           [
             { text: `Yes`, onPress: async () => {
                 
-                setTimeout(()=>{
                     signOut()
-                },1000)
+                    
             } },
             {
               text: 'No',
@@ -91,13 +90,11 @@ export default function UserScreen(){
     const loadUserData = async (id: any) => {
         const response = await UserData(id)
         const { nominees, votes } = response
-        const nomineeObj = nominees[0]
-        const votesObj = votes[0]
         if(response != undefined || response != null) {
             setUserStats(
                 {
-                    nominees: nomineeObj.length || 0,
-                    votes: votesObj.length || 0  
+                    nominees: nominees.length || 0,
+                    votes: votes.length || 0  
                 }
             )
         }else{
@@ -111,7 +108,9 @@ export default function UserScreen(){
     }
 
     useEffect(()=>{
-        loadUserLocalData()
+        setInterval(()=>{
+            loadUserLocalData()
+        },1000)
     },[])
 
     return(

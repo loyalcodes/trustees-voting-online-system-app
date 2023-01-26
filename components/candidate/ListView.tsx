@@ -10,32 +10,12 @@ import {
 import { StyleSheet, View, Text, Platform, TouchableOpacity, Image } from "react-native";
 import Colors from "../../constants/Colors";
 import { useNavigation } from "@react-navigation/native";
+import { EmployeeProps } from "../../types"
 
 interface Props {
     onVoteNominateHandler: any,
     action: string,
-    item: {
-        EMPLOYEE_ID: string,
-        EMPOYEE_CODE: string,
-        TITLE: string,
-        INITIAL: string,
-        NAME: string,
-        SURNAME: string,
-        GENDER: number,
-        GENDER_DESC: string,
-        CONTACT_NUMBER: string,
-        EMAIL: string,
-        POSITION: number,
-        POS_DESC: string,
-        JOB_GRADE: number,
-        JOB_GRADE_DESC: string,
-        BUSINESS_UNIT: number,
-        BUSINESS_UNIT_DESC: string,
-        STAFF_CATEGORY: number,
-        CONTRACT_TYPE_DESC: string,
-        DUTY_STATION: number,
-        STATION_DESC: string
-    }
+    item: EmployeeProps
 }
 export default ( {item, onVoteNominateHandler, action} : Props ) =>{
 
@@ -62,17 +42,19 @@ export default ( {item, onVoteNominateHandler, action} : Props ) =>{
            <View style={styles.main}>
                 <View style={styles.firstInner}>
                     <View style={[styles.imageWrapper, { display: action === "nominate" ? 'none' : 'flex' }]}>
-                        <Image source={require('../../assets/images/user.jpg')} style={styles.image} />
+                    <View style={{backgroundColor: Colors.light.semiSecondary, width: 60, height: 60, borderRadius: 50, alignSelf: "center", justifyContent: "center"}}>
+                            <Text style={{color: Colors.light.white, alignSelf:"center", fontWeight: "600"}}> { item.INITIAL } </Text>
+                        </View>
                     </View>
                     <View style={styles.details}>
-                        <Text numberOfLines={2} style={styles.detailName}> { item.NAME } </Text>
+                        <Text numberOfLines={2} style={styles.detailName}> { item.NAME } { item.SURNAME } </Text>
                         <Text style={[styles.detailDepartment, { fontSize: 15}]}> { item.POS_DESC } </Text>
                         <Text style={[styles.detailDepartment, { color: Colors.light.primary }]}> { item.BUSINESS_UNIT_DESC } </Text>
                     </View>
                 </View>
                 <TouchableOpacity onPress={()=>onVoteNominateHandler(item)} style={styles.button} activeOpacity={0.4}>
-                    <AntDesign style={styles.buttonIcon} color={Colors.light.white} size={14} name="check"/>
                     <Text style={styles.buttonText}> { action } </Text>
+                    <AntDesign style={styles.buttonIcon} color={Colors.light.white} size={14} name="check"/>
                 </TouchableOpacity>
            </View>
         </>
@@ -117,7 +99,8 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 5,
         width: 70,
-        height: 70
+        height: 70,
+        justifyContent: "center"
     },
     button: {
         backgroundColor: Colors.light.semiSecondary,
