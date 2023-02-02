@@ -141,7 +141,7 @@ export default function NominateScreen( {route}: any ){
                 setTitle("Nomination")
                 break;
             case 'vote':
-                setTitle("Vote")
+                setTitle("Election")
                 break;
             case 'endorse':
                 setTitle("Endorsement")
@@ -253,7 +253,7 @@ export default function NominateScreen( {route}: any ){
                 <View style={styles.searchWrapper}>
                     <View style={styles.searchInnerWrapper}>
                         <AntDesign style={styles.icon} name="search1" size={23} />
-                        <TextInput onChangeText={(text)=>onSearch(text)} value={searchText} placeholderTextColor='#000' style={styles.input} placeholder={`Search candidate to ${action}`} />
+                        <TextInput onChangeText={(text)=>onSearch(text)} value={searchText} placeholderTextColor='#000' style={styles.input} placeholder={`Search candidate to ${action === 'vote' ? 'elect' : action}`} />
                     </View>
                 </View>
 

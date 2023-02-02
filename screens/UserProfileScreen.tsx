@@ -20,6 +20,7 @@ import { style } from "@mui/system";
 import { BottomSheet } from 'react-native-btr';
 
 import * as ImagePicker from 'expo-image-picker';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 
 
@@ -30,6 +31,7 @@ export default function UserProfileScreen(){
     const [bioVisible, setBioVisible] = useState(false);
     const [bio, setBio] = useState("")
     const [reason, setReason] = useState("")
+    const [shouldLoad, setShouldLoad] = useState(false)
 
     const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
 
@@ -57,9 +59,32 @@ export default function UserProfileScreen(){
         }
     };
 
+    const onManifestoSave = () => {
+        toggleBottomNavigationView()
+        setShouldLoad(true)
+        setTimeout(()=>{
+            setShouldLoad(false)
+            Alert.alert("Manifesto", "Hooooray! Your manifesto has been updated successfully.")
+        },5000)
+    }
+
+    const onBioSave = () => {
+        toggleBioBottomNavigationView()
+        setShouldLoad(true)
+        setTimeout(()=>{
+            setShouldLoad(false)
+            Alert.alert("Bio", "Hooooray! Your bio has been updated successfully.")
+        },5000)
+    }
+
     return(
         <>
             <SafeAreaView style={styles.main}>
+            <Spinner
+            visible={shouldLoad}
+            textContent={'Please wait...'}
+            textStyle={{color: '#FFF',marginTop:-60}}
+            />
             <StatusBar barStyle={ Platform.OS === 'ios'  ? 'dark-content' : 'light-content'}/>
            
                 <MainHeader hasArrow title={"Edit Profile"}/>
@@ -152,7 +177,7 @@ export default function UserProfileScreen(){
                             />
 
 
-<TouchableOpacity onPress={()=>toggleBioBottomNavigationView()} style={{backgroundColor: Colors.light.primary, height: 45, borderRadius: 5, position:"absolute", bottom: 50, width: "100%", alignSelf:"center", justifyContent:"center"}}>
+<TouchableOpacity onPress={()=>onBioSave()} style={{backgroundColor: Colors.light.primary, height: 45, borderRadius: 5, position:"absolute", bottom: 50, width: "100%", alignSelf:"center", justifyContent:"center"}}>
     <Text style={{fontSize: 18, color: Colors.light.white, fontWeight: "600", alignSelf: "center"}}>Save Bio</Text>
 </TouchableOpacity>
               </View>
@@ -197,7 +222,7 @@ export default function UserProfileScreen(){
                                 placeholderTextColor={Colors.light.smoke}
                             />
 
-<TouchableOpacity onPress={()=>toggleBottomNavigationView()} style={{backgroundColor: Colors.light.primary, height: 45, borderRadius: 5, position:"absolute", bottom: 50, width: "100%", alignSelf:"center", justifyContent:"center"}}>
+<TouchableOpacity onPress={()=>onManifestoSave()} style={{backgroundColor: Colors.light.primary, height: 45, borderRadius: 5, position:"absolute", bottom: 50, width: "100%", alignSelf:"center", justifyContent:"center"}}>
     <Text style={{fontSize: 18, color: Colors.light.white, fontWeight: "600", alignSelf: "center"}}>Save Manifesto</Text>
 </TouchableOpacity>
 

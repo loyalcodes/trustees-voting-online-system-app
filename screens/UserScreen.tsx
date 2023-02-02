@@ -117,7 +117,7 @@ export default function UserScreen(){
             )
         }
         
-        const result = moment(getDate()).isAfter(election[0].NOM_END_DATE)
+        const result = moment(getDate()).isAfter(election[0].ELE_START_DATE)
         const nomResult = moment(getDate()).isAfter(election[0].NOM_START_DATE)
         setElectionDay(election[0].ELE_START_DATE)
         setnomineeDay(election[0].NOM_START_DATE)
@@ -140,15 +140,22 @@ export default function UserScreen(){
 
         if(isVotingOpen){
             const response = await readLocalStorageObject('userInteractionData')
-        const { votes } = response
-        if(votes == null || !votes.length){
-            navigation.navigate("NominateScreen" , { action: "vote" })
+        const { votes, nominees } = response
+
+        if(nominees == null || !nominees.length){
+            Alert.alert("NOTICE", "You CANNOT elect without nominating a candidate")   
         }else{
-            Alert.alert("NOTICE", "You can't elect twice. Please remove a candidate from your election list if you wish to vote again.")
+
+            if(votes == null || !votes.length){
+                navigation.navigate("NominateScreen" , { action: "vote" })
+            }else{
+                Alert.alert("NOTICE", "You cannot elect more than 1 candidate.")
+            }
+            
         }
-        }else{
-            Alert.alert("NOTICE", "Nomination process is currently in progress. Election is not yet open. Please be advised that election will start on "+ moment(electionDay).format())
-        }
+    }else{
+        Alert.alert("NOTICE", "Nomination process is currently in progress. Election is not yet open.")
+    }
 
 
     }
@@ -158,16 +165,25 @@ export default function UserScreen(){
 
         if(isNominationOpen){
             const response = await readLocalStorageObject('userInteractionData')
-            const { nominees } = response
-            if(response == null || !nominees.length){
-                navigation.navigate("NominateScreen" , { action: "nominate" })
-               
-            }else{
-                Alert.alert("NOTICE", "You can't nominate twice. Please remove a candidate from your nominees if you wish to nominate.")
-            }
+        const { nominees } = response
+
+        if(response == null || !nominees.length){
+
+            navigation.navigate("NominateScreen" , { action: "nominate" })  
+        
         }else{
-            Alert.alert("NOTICE", "Nomination process is currently not yet open. Please be advised that nominations will start on "+ moment(nomineeDay).format())
-        }    
+            Alert.alert("NOTICE", "You can't nominate twice. You have already nominated a candidate.")
+        }
+           
+            
+
+        }else{
+            Alert.alert("NOTICE", "Nomination process is currently not yet open.")
+        } 
+
+        
+
+           
         
     }
 

@@ -20,12 +20,14 @@ export const styles = StyleSheet.create({
        
     },
     loginWrapperTitle: {
-        fontSize: 22,
+        fontSize: 20,
         fontWeight:"600",
         alignSelf: "center",
-        marginBottom: 25,
+        marginBottom: 50,
         color: Colors.light.semiSecondary,
-        marginTop: 10
+        marginTop: 40,
+        textAlign: "center"
+        
     },
     textFieldWrapper: {
         borderColor: Colors.light.ashyGray,
