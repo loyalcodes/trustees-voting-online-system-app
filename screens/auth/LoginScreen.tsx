@@ -24,6 +24,7 @@ export default function LoginScreen(){
     const navigation = useNavigation()
     const { signIn } = React.useContext(AuthContext);
     const [shouldLoad, setShouldLoad] = useState(false)
+    const [toggle, setToggle] = useState(false)
 
     const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
 
@@ -44,8 +45,9 @@ export default function LoginScreen(){
             setShouldLoad(true)
             const response = await userAuth(email, password)
             setShouldLoad(false)
-            const { auth, data } = response
-            if(auth.status === "success"){
+            const { auth, data, userProfile } = response
+           // alert(JSON.stringify(userProfile))
+            if(userProfile.length){
               const { message } = await writeLocalStorageObject('userData', response)
               if(message === "success") {
                 signIn()
@@ -79,7 +81,7 @@ export default function LoginScreen(){
 
                 <View style={styles.loginWrapper}>
 
-                    <Text style={styles.loginWrapperTitle}>Trustees Voting App</Text>
+                    <Text style={styles.loginWrapperTitle}>NamRA Provident Fund Trustees Nomination and Election</Text>
 
                     <View style={{marginBottom: 20, marginLeft: 20, marginRight: 20}}>
                         <Text style={{textAlign: "center", fontSize: 16}}> Use your NamRA email address and password to successfully log into the app </Text>
@@ -104,11 +106,11 @@ export default function LoginScreen(){
                             </View>
                             <View style={styles.inputFieldIconLeft}>
                                 <AntDesign style={styles.leftIcon} size={25} color={Colors.light.semiSecondary} name="lock"/>
-                                <TextInput placeholderTextColor="#000" onChangeText={ (text)=>setPassword(text) } secureTextEntry style={styles.inputField} placeholder="Enter password"/>
+                                <TextInput placeholderTextColor="#000" onChangeText={ (text)=>setPassword(text) } secureTextEntry={toggle ? false : true} style={styles.inputField} placeholder="Enter password"/>
                             </View>
                         </View>
-                        <TouchableOpacity style={ {alignSelf:"center", marginRight:10} }>
-                            <Feather size={20} name="eye"/>
+                        <TouchableOpacity onPress={()=>setToggle(!toggle)} style={ {alignSelf:"center", marginRight:10} }>
+                            <Feather size={20} name={!toggle ? 'eye' : 'eye-off'}/>
                         </TouchableOpacity>
                         
                     </View>

@@ -16,66 +16,22 @@ import { candidateList, departmentsList } from "../data";
 import ListView from "../components/candidate/ListView";
 import DepartmentItem from "../components/DepartmentItem";
 import Spinner from 'react-native-loading-spinner-overlay';
-import { getCandidates, userNominate, userVote } from "../services/ApiComms";
+import { getCandidates, getCandidatesByDepartment, getDepartments, getEligibleMembers, userNominate, userVote } from "../services/ApiComms";
 import { readLocalStorageObject, writeLocalStorageObject } from "../helper/LocalStorage";
+import { EmployeeProps } from "../types";
+import { ListItemAnimation, MultiListItemAnimation, TwoLineAnimation } from "../helper/LoaderAnimator";
+import { DepartmentType } from "../types";
 
-interface CandidateType {
-    EMPLOYEE_ID: string,
-    EMPOYEE_CODE: string,
-    TITLE: string,
-    INITIAL: string,
-    NAME: string,
-    SURNAME: string,
-    GENDER: number,
-    GENDER_DESC: string,
-    CONTACT_NUMBER: string,
-    EMAIL: string,
-    POSITION: number,
-    POS_DESC: string,
-    JOB_GRADE: number,
-    JOB_GRADE_DESC: string,
-    BUSINESS_UNIT: number,
-    BUSINESS_UNIT_DESC: string,
-    STAFF_CATEGORY: number,
-    CONTRACT_TYPE_DESC: string,
-    DUTY_STATION: number,
-    STATION_DESC: string
-}
 interface CandidateListType {
-    item: {
-        EMPLOYEE_ID: string,
-        EMPOYEE_CODE: string,
-        TITLE: string,
-        INITIAL: string,
-        NAME: string,
-        SURNAME: string,
-        GENDER: number,
-        GENDER_DESC: string,
-        CONTACT_NUMBER: string,
-        EMAIL: string,
-        POSITION: number,
-        POS_DESC: string,
-        JOB_GRADE: number,
-        JOB_GRADE_DESC: string,
-        BUSINESS_UNIT: number,
-        BUSINESS_UNIT_DESC: string,
-        STAFF_CATEGORY: number,
-        CONTRACT_TYPE_DESC: string,
-        DUTY_STATION: number,
-        STATION_DESC: string
-    }
+    item: EmployeeProps
 }
 interface DepartmentProps {
     id: number,
     name: string,
     active: boolean
 }
-interface DepartmentType {
-    item: {
-        id: number,
-        name: string,
-        active: boolean
-    }
+interface DepartmentTypeProps {
+    item: DepartmentType
 }
 
 export default function NominateScreen( {route}: any ){
@@ -83,22 +39,26 @@ export default function NominateScreen( {route}: any ){
     const navigation = useNavigation()
 
     const [candidates, setCandidates] = useState([])
+    const [tempCandidates, setTempCandidates] = useState([])
     const [departments, setDepartments] = useState([])
     const [action, setAction] = useState("")
     const [title, setTitle] = useState("")
+    const [searchText, setSearchText] = useState("")
     const [shouldLoad, setShouldLoad] = useState(false)
+    const [isSearch, setIsSearch] = useState(false)
+    const [shouldLoadDepartment, setShouldLoadDepartment] = useState(false)
     const [currentDepartment, setCurrentDepartment] = useState("All")
 
     const loadCandidates = () =>{        
         const data = candidateList
         const departments = departmentsList
-        setCandidates(data)
-        setDepartments(departments)
+       // setCandidates(data)
+        //setDepartments(departments)
     }
 
     
 
-    const onVoteNominateHandler = (candidate: CandidateType) => {
+    const onVoteNominateHandler = (candidate: EmployeeProps) => {
         Alert.alert(
           action === "nominate" ? "Nomination" : "Vote",
           `Are you sure you want to ${action} ${candidate.NAME}?` ,
@@ -117,7 +77,8 @@ export default function NominateScreen( {route}: any ){
                             console.log(response)
                         break;
                     case 'vote':
-                        const voteResponse = await userVote(candidate.EMPLOYEE_ID)
+                       // alert(JSON.stringify(candidate))
+                        const voteResponse = await userVote(candidate.EMP_ID)
                         //const { rowsAffected } = response
                         if(voteResponse.rowsAffected){
                             Alert.alert('Thank You!', 'Your cast has been recorded.')
@@ -144,24 +105,34 @@ export default function NominateScreen( {route}: any ){
         );
       };
 
-    const onCategorySelected = ( { name, id, active } : DepartmentProps ) =>{
-
+    const onCategorySelected = async ( { NAME, ID, active } : DepartmentType ) =>{
         const allDeparts = departments
         //Update current selected department
         for(let i = 0; i < departments.length; i++ ){
-            let departObject: DepartmentProps = departments[i]
+            let departObject: DepartmentType = departments[i]
             if(departObject != undefined){
-                if(departObject.name === name){
+                if(departObject.NAME === NAME){
                     departObject.active = true
                 }else{
                     departObject.active = false
                 }
             }
         }
-        console.log(allDeparts)
             setDepartments(departments)
-            loadCandidates()
-            setCurrentDepartment(name)
+            setCurrentDepartment(NAME)
+            if(ID == 0) {
+                setShouldLoad(true)
+                const response = await getCandidates()
+                setCandidates(response)
+                setShouldLoad(false)
+                setTempCandidates(response)
+
+            }else{
+                setShouldLoad(true)
+                const byDepartmentResponse = await getCandidatesByDepartment(ID)
+                setShouldLoad(false)
+                setTempCandidates(byDepartmentResponse)
+            }
     }
 
     const render = (action: string) =>{
@@ -179,29 +150,89 @@ export default function NominateScreen( {route}: any ){
     }
 
     const loadContent = async (action: any) => {
-
         /**
          * CHECK IF WE HAVE DATA ON LOCAL STORAGE FIRST
          */
-        const offlineData = await readLocalStorageObject("candidatesListData")
-        if(offlineData != undefined || offlineData != null){
-            /** LOAD OFFLINE DATA */
-            setCandidates(offlineData)
+        switch(action){
+            case 'nominate':
+                const offlineData = await readLocalStorageObject("candidatesListData")
+                if(offlineData != undefined || offlineData != null){
+                    /** LOAD OFFLINE DATA */
+                    setCandidates(offlineData)
+                    setTempCandidates(offlineData)
+        
+                    /** UPDATE WITH LIVE DATA { IN THE BACKGROUND } */
+                    const response = await getCandidates()
+                    setCandidates(response)
+                    setTempCandidates(response)
+                    await writeLocalStorageObject("candidatesListData", response) // SAVE DATA TO LOCAL STORAGE
+                }else{
+                    setShouldLoad(true)
+                    const response = await getCandidates()
+                    setCandidates(response)
+                    setTempCandidates(response)
+                    await writeLocalStorageObject("candidatesListData", response)
+                    setShouldLoad(false)
+                }
+                break;
+            case 'vote':
 
-            /** UPDATE WITH LIVE DATA { IN THE BACKGROUND } */
-            const response = await getCandidates()
-            setCandidates(response)
-            await writeLocalStorageObject("candidatesListData", response) // SAVE DATA TO LOCAL STORAGE
-        }else{
-            setShouldLoad(true)
-            const response = await getCandidates()
-            setCandidates(response)
-            await writeLocalStorageObject("candidatesListData", response)
-            setShouldLoad(false)
+            const offlineEligibleData = await readLocalStorageObject("eligibleListData")
+            if(offlineEligibleData != undefined || offlineEligibleData != null){
+                /** LOAD OFFLINE DATA */
+                setCandidates(offlineEligibleData)
+                setTempCandidates(offlineEligibleData)
+                /** UPDATE WITH LIVE DATA { IN THE BACKGROUND } */
+                const response = await getEligibleMembers()
+                setCandidates(response)
+                setTempCandidates(response)
+                await writeLocalStorageObject("eligibleListData", response) // SAVE DATA TO LOCAL STORAGE
+            }else{
+                setShouldLoad(true)
+                const response = await getEligibleMembers()
+                setCandidates(response)
+                await writeLocalStorageObject("eligibleListData", response)
+                setShouldLoad(false)
+            }
+
+                break;
         }
         
+    }
+
+    const onSearch = (searchItem: any) => {
+        setIsSearch(true)
+        if(searchItem === "") {
+         setTempCandidates(candidates)
+         setCandidates(candidates)
+         setSearchText(searchItem)
+         //alert(candidates)
+         console.log("Hereeeeeeeeeeeeeee") 
+        }else{
+            const result = tempCandidates.filter((item) => {
+                return item.NAME.includes(searchItem)
+            })
+            setSearchText(searchItem)
+            setTempCandidates(result)
+        }
         
-        
+    }
+
+    const getDepartmentData = async () => {
+        setShouldLoadDepartment(true)
+        let response = await getDepartments()
+        for(let i = 0; i < response.length; i++){
+            const obj = response[i]
+            obj.active = false
+        }
+        const newObj = {
+            ID: 0,
+            NAME: 'All',
+            active: true
+        }
+        response.unshift(newObj)
+        setDepartments(response)
+        setShouldLoadDepartment(false)
     }
 
     useEffect(()=>{
@@ -210,22 +241,19 @@ export default function NominateScreen( {route}: any ){
         loadCandidates()
         render(action)
         loadContent(action) 
+        getDepartmentData()
     }, [])
 
     return(
         <>
             <SafeAreaView style={styles.main}>
             <StatusBar barStyle={ Platform.OS === 'ios'  ? 'dark-content' : 'light-content'}/>
-            <Spinner
-            visible={shouldLoad}
-            textContent={'Please wait...'}
-            textStyle={{color: '#FFF',marginTop:-60}}
-            />
+            
                 <MainHeader hasArrow title={title}/>
                 <View style={styles.searchWrapper}>
                     <View style={styles.searchInnerWrapper}>
-                        <AntDesign style={styles.icon} name="search1" size={20} />
-                        <TextInput placeholderTextColor='#000' style={styles.input} placeholder={`Search candidate to ${action}`} />
+                        <AntDesign style={styles.icon} name="search1" size={23} />
+                        <TextInput onChangeText={(text)=>onSearch(text)} value={searchText} placeholderTextColor='#000' style={styles.input} placeholder={`Search candidate to ${action}`} />
                     </View>
                 </View>
 
@@ -234,12 +262,25 @@ export default function NominateScreen( {route}: any ){
                         <Text style={{fontSize:16, fontWeight:"700", alignSelf:"center"}}>Candidates</Text>
                         <AntDesign size={12} style={{marginLeft: 5, alignSelf: "center", top: 2.5}} name="right"/>
                     </View>
-                    <Text style={{fontSize:10, fontWeight:"600", marginLeft: 5, alignSelf: "center", top: 2}}> { currentDepartment } </Text>
+                    <Text style={{fontSize:15, fontWeight:"600", marginLeft: 5, alignSelf: "center", top: 2}}> { currentDepartment } </Text>
                 </View>
-                <FlatList
-                data={candidates}
-                renderItem={ ({item} : CandidateListType) =><ListView action={action} onVoteNominateHandler={onVoteNominateHandler}  item={item}/>}
-                />
+
+                {
+                    shouldLoad ? (
+                    <> 
+                    <MultiListItemAnimation/>
+                     </> ) : !tempCandidates.length && isSearch ? (
+                            <View style={{marginTop: 20, justifyContent: "center", alignItems: "center", padding: 20}}>
+                                <Text style={{fontWeight: "600", textAlign: "center", fontSize: 17}}>No candidate found for "{ searchText }"</Text>
+                            </View>
+                     ) : (
+                        <FlatList
+                        data={tempCandidates}
+                        renderItem={ ({item} : CandidateListType) =><ListView action={action} onVoteNominateHandler={onVoteNominateHandler}  item={item}/>}
+                        />
+                    )
+                }
+                
 
                 <View style={{}}/>
 
@@ -247,11 +288,19 @@ export default function NominateScreen( {route}: any ){
             <View style={[styles.departmentListWrapper, { display: action === 'nominate' ? 'flex' : 'none' }]}>
                 <View style={{marginBottom:10}}>
                 <Text style={styles.departmentListWrapperText}>View by department</Text>
-                <FlatList
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                data={departments}
-                renderItem={ ({item}: DepartmentType) => <DepartmentItem onCategorySelected={onCategorySelected} item={item}/>}/>
+                {
+                   shouldLoadDepartment ? <TwoLineAnimation/> : 
+                   (
+                    <FlatList
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    data={departments}
+                    renderItem={ ({item}: DepartmentTypeProps) => <DepartmentItem onCategorySelected={onCategorySelected} item={item}/>}
+                    />
+                   )
+                }
+                
+                
                 </View>
             </View>
 
@@ -300,6 +349,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         bottom: Platform.OS === "ios" ? 20 : 0,
         backgroundColor: Colors.light.white,
+        width: "100%"
         
     },
     departmentListWrapperText:{
@@ -309,3 +359,5 @@ const styles = StyleSheet.create({
         marginLeft: 5
     }
 })
+
+

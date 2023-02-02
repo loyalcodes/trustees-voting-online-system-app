@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Image, Text, TouchableOpacity, StatusBar, Platform, Alert } from "react-native";
+import { StyleSheet, View, Image, Text, TouchableOpacity, StatusBar, Platform, Alert, ScrollView } from "react-native";
 import Colors from "../constants/Colors";
 import {
     FontAwesome5,
@@ -9,13 +9,14 @@ import {
     MaterialCommunityIcons,
     Ionicons,
   } from "@expo/vector-icons";
-
+  import SkeletonLoader from "expo-skeleton-loader"
   import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { readLocalStorageObject, removeLocalStorageObj } from "../helper/LocalStorage";
+import { readLocalStorageObject, removeLocalStorageObj, writeLocalStorageObject } from "../helper/LocalStorage";
 import {  userData as UserData } from "../services/ApiComms";
 import { AuthContext } from "../components/Context";
-
+import { UserInfoLoader } from "../helper/LoaderAnimator";
+import moment from 'moment';
 
 interface UserProps {
     employee_id: string,
@@ -41,7 +42,12 @@ export default function UserScreen(){
     const navigation = useNavigation()
     const [userData, setUserData] = useState<UserProps>()
     const [userStats, setUserStats] = useState<UserStats>({ nominees: 0, votes: 0 })
+    const [isLoading, setIsLoading] = useState(false)
     const { signOut } = React.useContext(AuthContext);
+    const [isVotingOpen, setIsVotingOpen] = useState(true)
+    const [isNominationOpen, setIsNominationOpen] = useState(false)
+    const [electionDay, setElectionDay] = useState()
+    const [nomineeDay, setnomineeDay] = useState()
 
     const onSignOutHandler = () => {
         Alert.alert(
@@ -68,10 +74,11 @@ export default function UserScreen(){
         if(result != null){
             const { userProfile } = result
         const a = userProfile[0]
+        
         const obj = {
             employee_id: a.EMPLOYEE_ID,
             title: a.TITLE,
-            initials: a.INITIAL,
+            initials: a.INITIALS,
             firstname: a.NAME,
             fullname: a.NAME + ' ' + a.SURNAME,
             surname: a.SURNAME,
@@ -83,13 +90,17 @@ export default function UserScreen(){
         }
         setUserData(obj)
         loadUserData(a.EMPLOYEE_ID)
+        
         }
 
     }
     
     const loadUserData = async (id: any) => {
+        setIsLoading(true)
         const response = await UserData(id)
-        const { nominees, votes } = response
+        setIsLoading(false)
+        const { nominees, votes, election } = response
+        const { message } = await writeLocalStorageObject('userInteractionData', response)
         if(response != undefined || response != null) {
             setUserStats(
                 {
@@ -105,9 +116,74 @@ export default function UserScreen(){
                 }
             )
         }
+        
+        const result = moment(getDate()).isAfter(election[0].NOM_END_DATE)
+        const nomResult = moment(getDate()).isAfter(election[0].NOM_START_DATE)
+        setElectionDay(election[0].ELE_START_DATE)
+        setnomineeDay(election[0].NOM_START_DATE)
+
+        if(result){
+            setIsVotingOpen(false)
+        }else{
+            setIsVotingOpen(true)
+        }
+
+        //UPDATE NOMINATION STATUS
+        if(nomResult){
+            setIsNominationOpen(false)
+        }else{
+            setIsNominationOpen(true)
+        }
+    }
+
+    const onVoteAction = async () => {
+
+        if(isVotingOpen){
+            const response = await readLocalStorageObject('userInteractionData')
+        const { votes } = response
+        if(votes == null || !votes.length){
+            navigation.navigate("NominateScreen" , { action: "vote" })
+        }else{
+            Alert.alert("NOTICE", "You can't elect twice. Please remove a candidate from your election list if you wish to vote again.")
+        }
+        }else{
+            Alert.alert("NOTICE", "Nomination process is currently in progress. Election is not yet open. Please be advised that election will start on "+ moment(electionDay).format())
+        }
+
+
+    }
+
+
+    const onNominateAction = async () => {
+
+        if(isNominationOpen){
+            const response = await readLocalStorageObject('userInteractionData')
+            const { nominees } = response
+            if(response == null || !nominees.length){
+                navigation.navigate("NominateScreen" , { action: "nominate" })
+               
+            }else{
+                Alert.alert("NOTICE", "You can't nominate twice. Please remove a candidate from your nominees if you wish to nominate.")
+            }
+        }else{
+            Alert.alert("NOTICE", "Nomination process is currently not yet open. Please be advised that nominations will start on "+ moment(nomineeDay).format())
+        }    
+        
+    }
+
+    const getDate = () => {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+       return today = mm + '/' + dd + '/' + yyyy;
+
     }
 
     useEffect(()=>{
+       // alert(getDate())
+        //alert(moment(getDate()).isAfter('2030-10-19'))
         setInterval(()=>{
             loadUserLocalData()
         },1000)
@@ -117,7 +193,7 @@ export default function UserScreen(){
         <>
             <SafeAreaView style={styles.main}>
             <StatusBar barStyle={ Platform.OS === 'ios'  ? 'dark-content' : 'light-content'}/>
-            <View style={{backgroundColor: Colors.light.semiSecondary, flex: 1}}>
+            <ScrollView style={{backgroundColor: Colors.light.semiSecondary, flex: 1}}>
                 <View>
                 <Image style={{width: 150,height: 80, borderRadius: 50, alignSelf:"center", marginTop: 20}} resizeMode="contain" source={require('../assets/images/logo_white.png')}/>
                 </View>
@@ -127,16 +203,20 @@ export default function UserScreen(){
                             <Text style={styles.avatarText} >{ userData?.initials }</Text>
                         </View>
                     </View>
-
+ 
                     <View style={styles.infoWrapper}>
-                        <Text style={styles.infoName}> { userData?.fullname } </Text>
-                        <Text style={styles.infoPosition}> { userData?.position } </Text>
-                        <Text style={styles.infoDepartment}> { userData?.department } </Text>
-                    </View>
+                                <Text style={styles.infoName}> { userData?.fullname } </Text>
+                                <Text style={styles.infoPosition}> { userData?.position } </Text>
+                                <Text style={styles.infoDepartment}> { userData?.department } </Text>
+                            </View>
+                    
+
+                    
+
 
                     <View style={{height:0.2, backgroundColor: Colors.light.smoke, marginTop: 20, marginLeft: 16, marginRight: 16}}/>
 
-                    <View style={{flexDirection: "row", justifyContent:"space-around", marginTop: 20}}>
+                    <View style={{flexDirection: "row", justifyContent:"space-around", marginTop: 20, display: isLoading ? 'flex' : 'flex'}}>
                     <TouchableOpacity onPress={()=>navigation.navigate("UserProfileScreen")}>
                                 <View style={{alignSelf:"center", marginBottom:4, marginTop:4}}>
                                     <FontAwesome5 name="edit" size={18} color={Colors.light.semiSecondary} />
@@ -151,13 +231,13 @@ export default function UserScreen(){
                             <View style={{backgroundColor: Colors.light.smoke, width:0.3, height: 20, alignSelf: "center"}}/>
                             <TouchableOpacity onPress={()=>navigation.navigate("UserNomineesScreen", { action : 'vote' })}>
                                 <Text style={styles.statTitle}> { userStats.votes } </Text>
-                                <Text style={styles.text}>My Votes</Text>
+                                <Text style={styles.text}>My Elections</Text>
                             </TouchableOpacity>
                     </View>
                     <View style={{backgroundColor: Colors.light.lightGray, marginTop: 30, flex: 1}}>
 
-                        <View style={{padding: 10}}>
-                            <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen" , { action: "nominate" })} activeOpacity={0.4} style={styles.button}>
+                        <View style={{padding: 10, display: isLoading ? 'flex' : 'flex'}}>
+                            <TouchableOpacity onPress={()=>onNominateAction()} activeOpacity={0.4} style={styles.button}>
                                 <View style={{flexDirection: "row", alignSelf: "center"}}>
                                     <Feather color={Colors.light.primary} size={23} name="key"/>
                                     <Text style={{fontSize: 15, fontWeight: "600", marginLeft: 10}}>Nominate a candidate</Text>
@@ -181,26 +261,28 @@ export default function UserScreen(){
                             
                             <View style={{height: 10}}/>
 
-                            <TouchableOpacity onPress={()=>navigation.navigate("NominateScreen" , { action: "vote" })} activeOpacity={0.4} style={styles.button}>
+                            <TouchableOpacity onPress={()=>onVoteAction()} activeOpacity={0.4} style={styles.button}>
                                 <View style={{flexDirection: "row", alignSelf: "center"}}>
                                     <MaterialCommunityIcons color={Colors.light.primary} size={23} name="vote-outline"/>
-                                    <Text style={{fontSize: 15, fontWeight: "600", marginLeft: 10}}>Vote a candidate</Text>
+                                    <Text style={{fontSize: 15, fontWeight: "600", marginLeft: 10}}>Elect a candidate</Text>
                                 </View>
                                 <AntDesign size={18} style={{alignSelf: "center"}} name="right"/>
                             </TouchableOpacity>
                         </View>
 
 
-                        <View style={{alignSelf:"center", marginTop: 20, position: "absolute", bottom: 20}}>
+                        <View style={{alignSelf:"center", marginTop: 20, backgroundColor: Colors.light.white, width: "100%", justifyContent: "center", alignItems: "center", padding: 10}}>
                             <TouchableOpacity onPress={()=>onSignOutHandler()} style={{backgroundColor: Colors.light.red, padding: 10, width: 150, borderRadius: 50, height: 45, alignItems: "center", justifyContent: "center"}}>
                                 <Text style={{alignSelf: "center", color: Colors.light.white, fontWeight:"700", fontSize: 15}}>Sign Out</Text>
                             </TouchableOpacity>
                         <Text style={{fontSize:8, alignSelf:"center", marginTop: 10}}>Copyright &copy;2023. NamRA</Text>
                     </View>
+                       
 
                     </View>
                 </View>
-                </View>
+                </ScrollView>
+                
             </SafeAreaView>
         </>
     )
@@ -228,10 +310,12 @@ const styles = StyleSheet.create({
         marginTop: -40,
         borderRadius: 50,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        borderColor: Colors.light.primary,
+        borderWidth: 4,
     },
     infoWrapper: {
-        marginTop: 60,
+        marginTop: 80,
         alignSelf:"center",
        
     },
@@ -279,21 +363,21 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'android' ? -2 : 0
     },
     imageInnerWrapper: {
-        width: 87,
-        height: 87,
-        backgroundColor: Colors.light.semiSecondary,
+        width: 85,
+        height: 85,
         position: "absolute",
         alignSelf: "center",
         marginTop: -40,
         borderRadius: 50,
-        borderColor:Colors.light.primary,
-        borderWidth:2,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        backgroundColor: Colors.light.semiSecondary
+        
+        
     },
     avatarText:{
         fontWeight: "500",
-        fontSize: 28,
+        fontSize: 20,
         color: Colors.light.white,
         
     }

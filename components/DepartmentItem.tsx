@@ -9,22 +9,19 @@ import {
     Ionicons,
   } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
+import { DepartmentType } from "../types";
 
 interface Props {
     onCategorySelected: any,
-    item: {
-        id: number,
-        name: string,
-        active: boolean,
-    }
+    item: DepartmentType
 }
 
 export default ( { item, onCategorySelected } : Props) =>{
-    const { id, name, active } = item
+    const { ID, NAME, active } = item
     return(
         <>
             <TouchableOpacity onPress={()=>onCategorySelected(item)} style={[styles.main, { backgroundColor: active ? Colors.light.primary : Colors.light.lightGray }]}>
-                <Text style={{alignSelf:"center", color: active ? Colors.light.white : 'black', fontWeight: active ? "700" : "400"}}> { name } </Text>
+                <Text style={{alignSelf:"center", color: active ? Colors.light.white : 'black', fontWeight: active ? "700" : "400"}}> { NAME } </Text>
             </TouchableOpacity>
         </>
     )

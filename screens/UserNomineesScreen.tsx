@@ -20,6 +20,8 @@ import UserNomineeVoteItem from "../components/candidate/UserNomineeVoteItem";
 import { userData as UserData, userRemoveNomination } from "../services/ApiComms";
 import { readLocalStorageObject } from "../helper/LocalStorage";
 import { EmployeeProps } from "../types";
+import { ListItemAnimation } from "../helper/LoaderAnimator";
+import { isLoading } from "expo-font";
 
 interface CandidateType {
     name: string,
@@ -50,6 +52,7 @@ export default function UserNomineesScreen( {route}: any ){
     const [action, setAction] = useState("")
     const [title, setTitle] = useState("")
     const [shouldLoad, setShouldLoad] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [currentDepartment, setCurrentDepartment] = useState("All")
     const [nomineesList, setNomineesList] = useState([])
     const [data, setData] = useState([])
@@ -65,12 +68,13 @@ export default function UserNomineesScreen( {route}: any ){
 
     const onRemoveNominateVoteHandler = (candidate: EmployeeProps) => {
         Alert.alert(
-          action === "nominate" ? "Nomination" : "Vote",
+          action === "nominate" ? "Nomination" : "Election",
           `Are you sure you want to remove ${candidate.NAME} from your list?` ,
           [
             { text: `Yes`, onPress: async () => {
-                setShouldLoad(true)
+                setLoading(true)
                 const response = await userRemoveNomination()
+                setLoading(false)
                 if(response.rowsAffected){
                     Alert.alert('Thank You!', 'Your cast has been recorded.')
                     navigation.navigate("UserScreen")
@@ -114,18 +118,16 @@ export default function UserNomineesScreen( {route}: any ){
                 setTitle("My Nominees")
                 break;
             case 'vote':
-                setTitle("My Votes")
+                setTitle("My Elections")
                 break;
         }
     }
 
     const loadUserData = async (action: string) => {
-
-        //GET USER ID
+        setShouldLoad(true)
         const user = await readLocalStorageObject("userData")
         const { userProfile } = user
         const userId = userProfile[0].EMPLOYEE_ID
-        
         const response = await UserData(userId)
         const { nominees, votes } = response
 
@@ -135,12 +137,14 @@ export default function UserNomineesScreen( {route}: any ){
         if(action === "vote"){
             setData(votes)
         }
+        setShouldLoad(false)
+
     }
 
     useEffect(()=>{
         const { action } = route.params
         setAction(action)
-        loadCandidates()
+        //loadCandidates()
         render(action)
         loadUserData(action)
     }, [])
@@ -150,21 +154,27 @@ export default function UserNomineesScreen( {route}: any ){
             <SafeAreaView style={styles.main}>
             <StatusBar barStyle={ Platform.OS === 'ios'  ? 'dark-content' : 'light-content'}/>
             <Spinner
-            visible={shouldLoad}
+            visible={loading}
             textContent={'Please wait...'}
             textStyle={{color: '#FFF',marginTop:-60}}
             />
                 <MainHeader hasArrow title={title}/>
-              
 
-              <View style={{alignSelf:"center", marginTop: 50, display: data.length || data == null ? 'none' : 'flex'}}>
-                <Text style={{fontWeight: "600", fontSize: 16}}> You have no { action === "nominee" ? "nominations" : "votes" } yet. </Text>
-              </View>
+                {
+                shouldLoad ? <ListItemAnimation/> : 
+                !data.length ? (
+                    <View style={{alignSelf:"center", marginTop: 50}}>
+                        <Text style={{fontWeight: "300", fontSize: 20, textAlign: 'center', width: 320}}> You have not { action === "nominate" ? "nominated" : "elected" } any candidate yet. </Text>
+                    </View>
+                ) : (
+                    <FlatList
+                    data={data}
+                    renderItem={ ({item} : CandidateListType) =><UserNomineeVoteItem action={action} onRemoveNominateVoteHandler={onRemoveNominateVoteHandler}  item={item}/>}
+                    />
+                )
+             }
 
-                <FlatList
-                data={data}
-                renderItem={ ({item} : CandidateListType) =><UserNomineeVoteItem action={action} onRemoveNominateVoteHandler={onRemoveNominateVoteHandler}  item={item}/>}
-                />
+                
 
                 <View style={{}}/>
 

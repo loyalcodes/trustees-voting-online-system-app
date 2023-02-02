@@ -38,7 +38,7 @@ export type EmployeeProps = {
     EMPLOYEE_ID: number,
     EMPOYEE_CODE: string,
     TITLE: string,
-    INITIAL: string,
+    INITIALS: string,
     NAME: string,
     SURNAME: string,
     GENDER: number,
@@ -55,4 +55,24 @@ export type EmployeeProps = {
     CONTRACT_TYPE_DESC: string,
     DUTY_STATION: number,
     STATION_DESC: string
+}
+
+export type VoteProps = {
+    EMP_ID: number,
+    EMPLOYEE_CODE: string,
+    TITLE: string,
+    INITIALS: string,
+    NAME: string,
+    SURNAME: string,
+    GENDER: string,
+    CONTACT_NUMBER: string,
+    POSITION: string,
+    BUSINESS_UNIT: string,
+    TOTAL: string
+}
+
+export type DepartmentType = {
+    ID: number,
+    NAME: string,
+    active: boolean
 }

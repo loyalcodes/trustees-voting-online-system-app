@@ -19,6 +19,38 @@ const userData = async (id: any) =>{
 
 }
 
+
+const getEligibleMembers = async () => {
+  return await fetch(API_BASE_URL+"/vote/all")
+  .then(async response => {
+    const { data } = JSON.parse(await response.text());
+    return data;
+  })
+  .then(result => {
+    return result;
+  })
+  .catch(error => {
+    return error;
+  });
+
+}
+
+
+const getDepartments = async () => {
+  return await fetch(API_BASE_URL+"/department/list")
+  .then(async response => {
+    const { data } = JSON.parse(await response.text());
+    return data;
+  })
+  .then(result => {
+    return result;
+  })
+  .catch(error => {
+    return error;
+  });
+
+}
+
 const getCandidates = async () =>{
   return await fetch(API_BASE_URL+"/users")
   .then(async response => {
@@ -33,6 +65,22 @@ const getCandidates = async () =>{
   });
 
 }
+
+const getCandidatesByDepartment = async (departmentId: any) =>{
+  return await fetch(API_BASE_URL+"/users/list/by-department/"+departmentId)
+  .then(async response => {
+    const { data } = JSON.parse(await response.text());
+    return data;
+  })
+  .then(result => {
+    return result;
+  })
+  .catch(error => {
+    return error;
+  });
+
+}
+
 
 const userAuth = async (email: String, password: String) =>{
 
@@ -144,6 +192,46 @@ const userRemoveNomination = async () =>{
   }
 
 
+
+
+  const userRemoveVote = async () =>{
+    const user = await readLocalStorageObject("userData")
+    const { userProfile } = user
+    const userId = userProfile[0].EMPLOYEE_ID
+    
+        const temp = {
+            userId: userId
+        }
+    
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+    
+        var raw = JSON.stringify(temp);
+    
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+    
+          return await fetch(API_BASE_URL+"/vote/remove/by-user", requestOptions)
+          .then(async response => {
+            const { data } = JSON.parse(await response.text());
+            
+            return data;
+          })
+          .then(result => {
+            return result;
+          })
+          .catch(error => {
+            console.log('ERROR:======', error)
+            return error;
+          });
+    
+    }
+
+
 const userVote = async (id: any) =>{
   const user = await readLocalStorageObject("userData")
   const { userProfile } = user
@@ -189,5 +277,9 @@ export {
     userData,
     getCandidates,
     userVote,
-    userRemoveNomination
+    userRemoveVote,
+    userRemoveNomination,
+    getEligibleMembers,
+    getDepartments,
+    getCandidatesByDepartment
 }

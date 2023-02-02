@@ -16,7 +16,9 @@ const RootStack = createStackNavigator()
 
 export default () => (
 
-    <RootStack.Navigator headerMode="none">
+    <RootStack.Navigator screenOptions={{
+        headerShown: false
+      }}>
          
         <RootStack.Screen name='LoginScreen' component={LoginScreen} />
         <RootStack.Screen name='ForgotPasswordScreen' component={ForgotPasswordScreen} />

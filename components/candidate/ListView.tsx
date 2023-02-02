@@ -17,6 +17,7 @@ interface Props {
     action: string,
     item: EmployeeProps
 }
+
 export default ( {item, onVoteNominateHandler, action} : Props ) =>{
 
     const navigation = useNavigation()
@@ -35,28 +36,32 @@ export default ( {item, onVoteNominateHandler, action} : Props ) =>{
 
     useEffect(()=>{
         render()
+        console.log(item)
     },[])
 
     return(
         <>
            <View style={styles.main}>
                 <View style={styles.firstInner}>
-                    <View style={[styles.imageWrapper, { display: action === "nominate" ? 'none' : 'flex' }]}>
+                    <View style={[styles.imageWrapper]}>
                     <View style={{backgroundColor: Colors.light.semiSecondary, width: 60, height: 60, borderRadius: 50, alignSelf: "center", justifyContent: "center"}}>
-                            <Text style={{color: Colors.light.white, alignSelf:"center", fontWeight: "600"}}> { item.INITIAL } </Text>
+                            <Text style={{color: Colors.light.white, alignSelf:"center", fontWeight: "600"}}> { item.INITIALS } </Text>
                         </View>
                     </View>
                     <View style={styles.details}>
                         <Text numberOfLines={2} style={styles.detailName}> { item.NAME } { item.SURNAME } </Text>
-                        <Text style={[styles.detailDepartment, { fontSize: 15}]}> { item.POS_DESC } </Text>
-                        <Text style={[styles.detailDepartment, { color: Colors.light.primary }]}> { item.BUSINESS_UNIT_DESC } </Text>
+                        <Text style={[styles.detailDepartment, { fontSize: 15}]}> { !item.POS_DESC ? item.POSITION : item.POS_DESC } </Text>
+                        <Text style={[styles.detailDepartment, { color: Colors.light.primary }]}> { !item.BUSINESS_UNIT_DESC  ? item.BUSINESS_UNIT : item.BUSINESS_UNIT_DESC } </Text>
+                        <TouchableOpacity onPress={()=> navigation.navigate("VotedUserProfileScreen", { item: item })} style={[styles.profileButton, { display: action === 'vote' ? 'flex' : 'none' }]} activeOpacity={0.4}>
+                        <Text style={styles.profileButtonText}> View profile </Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <TouchableOpacity onPress={()=>onVoteNominateHandler(item)} style={styles.button} activeOpacity={0.4}>
-                    <Text style={styles.buttonText}> { action } </Text>
-                    <AntDesign style={styles.buttonIcon} color={Colors.light.white} size={14} name="check"/>
+                    <Text style={styles.buttonText}> { action === "vote" ? "Elect" : action } </Text>
                 </TouchableOpacity>
            </View>
+           <View style={{height:0.4, backgroundColor: Colors.light.smoke, marginStart: 90}}/>
         </>
     )
 }
@@ -106,19 +111,38 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.light.semiSecondary,
         justifyContent: "space-around",
         flexDirection: "row",
-        height:30,
+        height:35,
         padding:5,
-        alignSelf: "center",
         width:90,
-        borderRadius:2
+        borderRadius:5
+    },
+    profileButton: {
+        borderColor: Colors.light.semiSecondary,
+        borderWidth: 0.5,
+        justifyContent: "space-around",
+        flexDirection: "row",
+        height:35,
+        padding:5,
+        width:120,
+        borderRadius:50,
+        marginTop: 5
+        
     },
     buttonText: {
         color: Colors.light.white,
         alignSelf: "center",
-        textTransform:"capitalize"
+        textTransform:"capitalize",
+        fontWeight: "600"
+    },
+    profileButtonText: {
+        alignSelf: "center",
+        textTransform:"capitalize",
+        fontWeight: "700",
+        
     },
     buttonIcon: {
-        alignSelf: "center"
+        alignSelf: "center",
+        
     }
 })
 

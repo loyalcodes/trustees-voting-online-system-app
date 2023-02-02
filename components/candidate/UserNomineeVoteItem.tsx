@@ -35,6 +35,7 @@ export default ( {item, onRemoveNominateVoteHandler, action} : Props ) =>{
 
     useEffect(()=>{
         render()
+        
     },[])
 
     return(
@@ -43,16 +44,17 @@ export default ( {item, onRemoveNominateVoteHandler, action} : Props ) =>{
                 <View style={styles.firstInner}>
                     <View style={styles.imageWrapper}>
                         <View style={{backgroundColor: Colors.light.semiSecondary, width: 60, height: 60, borderRadius: 50, alignSelf: "center", justifyContent: "center"}}>
-                            <Text style={{color: Colors.light.white, alignSelf:"center", fontWeight: "600"}}> { item.INITIAL } </Text>
+                            <Text style={{color: Colors.light.white, alignSelf:"center", fontWeight: "600"}}> { item.INITIALS } </Text>
                         </View>
                     </View>
                     <View style={styles.details}>
                         <Text numberOfLines={2} style={styles.detailName}> { item.NAME } {  item.SURNAME }</Text>
                         <Text style={[styles.detailDepartment, { fontSize: 15}]}> { item.POS_DESC } </Text>
-                        <Text style={[styles.detailDepartment, { color: Colors.light.primary }]}> { item.BUSINESS_UNIT_DESC } </Text>
+                        <Text style={[styles.detailDepartment, { color: Colors.light.primary }]}> { !item.BUSINESS_UNIT_DESC  ? item.BUSINESS_UNIT : item.BUSINESS_UNIT_DESC } </Text>
+                        
                     </View>
                 </View>
-                <TouchableOpacity onPress={()=>onRemoveNominateVoteHandler(item)} style={styles.button} activeOpacity={0.4}>
+                <TouchableOpacity onPress={()=>onRemoveNominateVoteHandler(item)} style={[styles.button, { display: 'none' }]} activeOpacity={0.4}>
                     <AntDesign style={styles.buttonIcon} color={Colors.light.white} size={14} name="close"/>
                     <Text style={styles.buttonText}> Remove </Text>
                 </TouchableOpacity>
